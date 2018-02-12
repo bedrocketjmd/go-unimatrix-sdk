@@ -1,32 +1,32 @@
 package unimatrix_sdk
 
 import (
-	"net/http"
 	"io/ioutil"
+	"net/http"
 )
 
-func Request( url string, method string ) ( UnimatrixObject, error ) {
+func Request(url string, method string) (*Parser, error) {
 	client := &http.Client{}
 
-	req, err := http.NewRequest( method, url, nil )
+	req, err := http.NewRequest(method, url, nil)
 
 	if err != nil {
-		return UnimatrixObject{}, err
+		return nil, err
 	}
 
-	resp, err := client.Do( req )
+	resp, err := client.Do(req)
 
 	if err != nil {
-		return UnimatrixObject{}, err
+		return nil, err
 	}
 
-	bodyText, err := ioutil.ReadAll( resp.Body )
+	bodyText, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		return UnimatrixObject{}, err
+		return nil, err
 	}
 
-	parsedResponse := Parse( bodyText )
+	parser := NewParser(bodyText)
 
-	return parsedResponse, nil
+	return parser, nil
 }

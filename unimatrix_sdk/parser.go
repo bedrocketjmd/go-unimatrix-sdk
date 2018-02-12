@@ -4,46 +4,36 @@ import (
 	"encoding/json"
 )
 
-type Artifact struct {
-	uuid string
-	realmUuid string
-	name string
+type Parser struct {
+	name         string
+	typeName     string
+	keys         []string
+	associations []Resource
+	resources    []Resource
 }
 
-type UnimatrixObject struct {
-	Name         string
-	TypeName     string
-	Keys         []interface{}
-	Resources    []Artifact
-}
-
-func Parse( rawResponse []byte ) ( UnimatrixObject ) {
+func NewParser(rawResponse []byte) *Parser {
 	var response map[string]interface{}
+	var resources []Resource
+	var ids []string
 
 	json.Unmarshal([]byte(rawResponse), &response)
 
-	// do something with response
-
 	this := response["$this"].(map[string]interface{})
 	name := this["name"].(string)
-	artifacts := []Artifact{}
+	typeName := this["type_name"].(string)
+
+	for _, id := range this["ids"].([]interface{}) {
+		ids = append(ids, id.(string))
+	}
 
 	for _, resource := range response[name].([]interface{}) {
-		resource := resource.(map[string]interface{})
-		artifact := Artifact{
-			uuid: resource["uuid"].(string),
-			realmUuid: resource["realm_uuid"].(string),
-			name: resource["name"].(string),
-		}
-		artifacts = append(artifacts, artifact)
+		resources = append(resources, *NewResource(name, resource))
 	}
-
-	parsedResponse := UnimatrixObject{
-		Name: name,
-		TypeName: this["type_name"].(string),
-		Keys: this["ids"].([]interface{}),
-		Resources: artifacts,
+	return &Parser{
+		name:      name,
+		typeName:  typeName,
+		keys:      ids,
+		resources: resources,
 	}
-
-	return parsedResponse
 }

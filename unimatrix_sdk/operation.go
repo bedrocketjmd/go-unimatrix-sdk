@@ -1,11 +1,20 @@
 package unimatrix_sdk
 
-func Read( url string ) ( UnimatrixObject, error ) {
-	response, err := Request( url, "GET" )
+type Operation struct {
+	path string
+	// params map[string]string
+}
+
+func NewOperation(path string) *Operation {
+	return &Operation{path: path}
+}
+
+func (o *Operation) Read() ([]Resource, error) {
+	response, err := Request(o.path, "GET")
 
 	if err != nil {
-		return UnimatrixObject{}, err
+		return nil, err
 	}
 
-	return response, nil
+	return response.resources, nil
 }
