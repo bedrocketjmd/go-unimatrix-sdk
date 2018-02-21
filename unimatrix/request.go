@@ -8,22 +8,22 @@ import (
 func Request(url string, method string) (*Parser, error) {
 	client := &http.Client{}
 
-	req, err := http.NewRequest(method, url, nil)
+	req, error := http.NewRequest(method, url, nil)
 
-	if err != nil {
-		return nil, err
+	if error != nil {
+		return nil, error
 	}
 
-	resp, err := client.Do(req)
+	resp, error := client.Do(req)
 
-	if err != nil {
-		return nil, err
+	if error != nil {
+		return nil, error
 	}
 
-	bodyText, err := ioutil.ReadAll(resp.Body)
+	bodyText, error := ioutil.ReadAll(resp.Body)
 
-	if err != nil {
-		return nil, err
+	if error != nil {
+		return nil, error
 	}
 
 	parser := NewParser(bodyText)
