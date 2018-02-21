@@ -1,4 +1,4 @@
-package unimatrix_sdk
+package unimatrix
 
 import (
 	"io/ioutil"

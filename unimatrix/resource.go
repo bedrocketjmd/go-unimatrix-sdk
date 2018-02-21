@@ -1,4 +1,4 @@
-package unimatrix_sdk
+package unimatrix
 
 type Resource struct {
 	attributes map[string]interface{}
