@@ -2,7 +2,7 @@ package unimatrix
 
 type Operation struct {
 	path       string
-	parameters map[string]string
+	parameters string
 }
 
 func NewOperation(path string) *Operation {
@@ -21,6 +21,6 @@ func (operation *Operation) Read() (*Parser, error) {
 	return response, nil
 }
 
-func (operation *Operation) SetParameters(parameters map[string]string) {
+func (operation *Operation) SetParameters(parameters string) {
 	operation.parameters = parameters
 }
