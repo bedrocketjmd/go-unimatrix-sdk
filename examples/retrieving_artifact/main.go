@@ -11,9 +11,9 @@ func main() {
 	operation := unimatrix.NewOperation(apiUrl + "/realms/1e338862026376dd593425404a4f75c0/artifacts")
 	params := map[string]string{"uuid": "643a9e056300d54eed7a14066513f435"}
 	operation.SetParameters(params)
-	resources, _ := operation.Read()
+	response, _ := operation.Read()
 
-	for _, resource := range resources {
+	for _, resource := range response.Resources {
 		fmt.Println(resource)
 	}
 }
