@@ -30,6 +30,8 @@ type AssociationInner struct {
 	Ids      []string `json:"ids"`
 }
 
+type Associations map[string][]map[string]string
+
 var associationMap = make(map[string]map[string]map[string][]string)
 var resourceIndex = make(map[string]map[string]map[string]string)
 
@@ -78,7 +80,7 @@ func buildAssociationMap(staticResponse StaticResponse) {
 	}
 }
 
-func (parser *Parser) GetAssociations(name string, id string) map[string][]map[string]string {
+func (parser *Parser) GetAssociations(name string, id string) Associations {
 	var associations = make(map[string][]map[string]string)
 
 	for associationType, ids := range associationMap[name][id] {
