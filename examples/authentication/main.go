@@ -12,9 +12,9 @@ func main() {
 
 	clientId := os.Getenv("KEYMAKER_CLIENT")
 	clientSecret := os.Getenv("KEYMAKER_SECRET")
-	clientOperation := unimatrix.NewClientOperation(clientId, clientSecret)
+	accessTokenOperation := unimatrix.NewAccessTokenOperation(clientId, clientSecret)
 
-	tokenResponse, _ := clientOperation.AccessToken()
+	tokenResponse, _ := accessTokenOperation.AccessToken()
 
 	fmt.Println(tokenResponse)
 }

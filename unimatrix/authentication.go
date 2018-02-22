@@ -6,16 +6,16 @@ import (
 	"net/http"
 )
 
-type ClientOperation struct {
+type AccessTokenOperation struct {
 	clientId     string
 	clientSecret string
 }
 
-func NewClientOperation(clientId string, clientSecret string) *ClientOperation {
-	return &ClientOperation{clientId: clientId, clientSecret: clientSecret}
+func NewAccessTokenOperation(clientId string, clientSecret string) *AccessTokenOperation {
+	return &AccessTokenOperation{clientId: clientId, clientSecret: clientSecret}
 }
 
-func (clientOperation *ClientOperation) AccessToken() (map[string]interface{}, error) {
+func (accessTokenOperation *AccessTokenOperation) AccessToken() (map[string]interface{}, error) {
 	client := &http.Client{}
 
 	authenticationURL := GetAuthenticationURL() + "/token"
@@ -29,8 +29,8 @@ func (clientOperation *ClientOperation) AccessToken() (map[string]interface{}, e
 	query := req.URL.Query()
 
 	query.Add("grant_type", "client_credentials")
-	query.Add("client_id", clientOperation.clientId)
-	query.Add("client_secret", clientOperation.clientSecret)
+	query.Add("client_id", accessTokenOperation.clientId)
+	query.Add("client_secret", accessTokenOperation.clientSecret)
 
 	req.URL.RawQuery = query.Encode()
 
