@@ -5,8 +5,8 @@ import (
 )
 
 type configuration struct {
-	authorizationURL string
-	apiURL           string
+	authenticationURL string
+	apiURL            string
 }
 
 var instance *configuration
@@ -34,16 +34,16 @@ func GetURL() string {
 	}
 }
 
-func SetAuthorizationURL(url string) *configuration {
+func SetAuthenticationURL(url string) *configuration {
 	GetConfiguration()
-	instance.authorizationURL = url
+	instance.authenticationURL = url
 	return instance
 }
 
-func GetAuthorizationURL() string {
+func GetAuthenticationURL() string {
 	GetConfiguration()
-	if instance.authorizationURL != "" {
-		return instance.authorizationURL
+	if instance.authenticationURL != "" {
+		return instance.authenticationURL
 	} else {
 		return "http://us-west-2.keymaker.boxxspring.net"
 	}
