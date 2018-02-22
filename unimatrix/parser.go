@@ -107,23 +107,19 @@ func resources(name string, ids []string) []Resource {
 func NewParser(rawResponse []byte) *Parser {
 	var staticResponse StaticResponse
 	var jsonResponse JsonResponse
-	var ids []string
 
 	json.Unmarshal([]byte(rawResponse), &staticResponse)
 	json.Unmarshal([]byte(rawResponse), &jsonResponse)
 
 	this := staticResponse.This
-	name := this.Name
-	typeName := this.TypeName
-	ids = this.Ids
 
 	buildResourceIndex(jsonResponse)
 	buildAssociationMap(staticResponse)
 
 	return &Parser{
-		Name:      name,
-		TypeName:  typeName,
-		Keys:      ids,
+		Name:      this.Name,
+		TypeName:  this.TypeName,
+		Keys:      this.Ids,
 		Resources: resources(name, ids),
 	}
 }
