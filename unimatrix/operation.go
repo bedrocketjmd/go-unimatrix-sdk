@@ -10,7 +10,9 @@ func NewOperation(path string) *Operation {
 }
 
 func (operation *Operation) Read() (*Parser, error) {
-	response, error := Request(operation.path, "GET", operation.parameters)
+	apiURL := GetURL() + operation.path
+
+	response, error := Request(apiURL, "GET", operation.parameters)
 
 	if error != nil {
 		return nil, error
