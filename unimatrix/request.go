@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func Request(url string, method string) (*Parser, error) {
+func Request(url string, method string, parameters map[string]string) (*Parser, error) {
 	client := &http.Client{}
 
 	req, error := http.NewRequest(method, url, nil)
@@ -13,6 +13,14 @@ func Request(url string, method string) (*Parser, error) {
 	if error != nil {
 		return nil, error
 	}
+
+	query := req.URL.Query()
+
+	for key, value := range parameters {
+		query.Add(key, value)
+	}
+
+	req.URL.RawQuery = query.Encode()
 
 	resp, error := client.Do(req)
 
