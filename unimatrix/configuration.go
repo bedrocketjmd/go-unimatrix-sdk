@@ -13,10 +13,10 @@ type configuration struct {
 }
 
 var configurationInstance *configuration
-var once sync.Once
+var configurationSetup sync.Once
 
 func GetConfiguration() *configuration {
-	once.Do(func() {
+	configurationSetup.Do(func() {
 		configurationInstance = &configuration{}
 		configurationInstance.URL = defaultURL
 		configurationInstance.authorizationURL = defaultAuthorizationURL
