@@ -13,6 +13,8 @@ func main() {
 	// assign query parameters directly with a map[string][]string
 	parameters := map[string][]string{"test": []string{"test_value"}}
 	operation.AssignParameters(parameters)
+	fmt.Println("OPERATION:")
+	fmt.Println(operation)
 
 	// create a new query
 	query := unimatrix.NewQuery().
@@ -20,12 +22,15 @@ func main() {
 		WhereArray("name:in", []string{"Final Nick", "test with categoryyy"}).
 		WhereArray("relationships.category:eq", []string{"59419fff92047f6e01a98ed35eb21f10"}).
 		Where("description:search", "stuff")
-	fmt.Println("QUERY PARAMETERS:")
+	fmt.Println("\nQUERY PARAMETERS:")
 	fmt.Println(query.Parameters())
 
 	// assigning query parameters will replace previous query parameters
 	operation.AssignParameters(query.Parameters())
+	fmt.Println("\nUPDATED OPERATION:")
+	fmt.Println(operation)
 
+	// create another query
 	additional_query := unimatrix.NewQuery().
 		Count(5).
 		Offset(3).
@@ -36,7 +41,7 @@ func main() {
 
 	// appending query parameters will add to previous query parameters
 	operation.AppendParameters(additional_query.Parameters())
-	fmt.Println("\nOPERATION:")
+	fmt.Println("\nFINAL OPERATION:")
 	fmt.Println(operation)
 
 	response, _ := operation.Read()
