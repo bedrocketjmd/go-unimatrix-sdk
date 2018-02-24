@@ -4,47 +4,38 @@ import (
 	"sync"
 )
 
+const defaultURL = "http://us-west-2.api.unimatrix.io"
+const defaultAuthorizationURL = "http://us-west-2.keymaker.boxxspring.net"
+
 type configuration struct {
-	authenticationURL string
-	apiURL            string
+	authorizationURL string
+	URL              string
 }
 
-var instance *configuration
-var once sync.Once
+var configurationInstance *configuration
+var configurationSetup sync.Once
 
 func GetConfiguration() *configuration {
-	once.Do(func() {
-		instance = &configuration{}
+	configurationSetup.Do(func() {
+		configurationInstance = &configuration{}
+		configurationInstance.URL = defaultURL
+		configurationInstance.authorizationURL = defaultAuthorizationURL
 	})
-	return instance
+	return configurationInstance
 }
 
-func SetURL(url string) *configuration {
-	GetConfiguration()
-	instance.apiURL = url
-	return instance
+func SetURL(url string) {
+	GetConfiguration().URL = url
 }
 
 func GetURL() string {
-	GetConfiguration()
-	if instance.apiURL != "" {
-		return instance.apiURL
-	} else {
-		return "http://us-west-2.api.unimatrix.io"
-	}
+	return GetConfiguration().URL
 }
 
-func SetAuthenticationURL(url string) *configuration {
-	GetConfiguration()
-	instance.authenticationURL = url
-	return instance
+func SetAuthorizationURL(url string) {
+	GetConfiguration().authorizationURL = url
 }
 
-func GetAuthenticationURL() string {
-	GetConfiguration()
-	if instance.authenticationURL != "" {
-		return instance.authenticationURL
-	} else {
-		return "http://us-west-2.keymaker.boxxspring.net"
-	}
+func GetAuthorizationURL() string {
+	return GetConfiguration().authorizationURL
 }
