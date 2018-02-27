@@ -11,14 +11,10 @@ func main() {
 	operation := unimatrix.NewOperation("/realms/1e338862026376dd593425404a4f75c0/artifacts")
 
 	query := unimatrix.NewQuery().
-		Where("uuid", "4053b259918f6a81b0cac7f2a0e78dcc").
-		Include("relationships.category", "artifacts")
+		Where("uuid", "does-not-exist")
 
 	operation.SetParameters(query.Parameters())
 	response, _ := operation.Read()
 
-	for _, resource := range response.Resources {
-		fmt.Println(resource)
-		fmt.Println(response.GetAssociations("artifacts", resource["id"].(string)))
-	}
+	fmt.Println(response.Errors)
 }
