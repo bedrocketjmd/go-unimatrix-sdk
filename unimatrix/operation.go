@@ -1,18 +1,26 @@
 package unimatrix
 
+import (
+	"net/url"
+)
+
 type Operation struct {
 	path       string
-	parameters string
+	parameters map[string][]string
 }
 
 func NewOperation(path string) *Operation {
-	return &Operation{path: path}
+
+	return &Operation{path: path, parameters: map[string][]string{}}
 }
 
 func (operation *Operation) Read() (*Parser, error) {
 	URL := GetURL() + operation.path
 
-	response, error := Request(URL, "GET", operation.parameters)
+	var parameters url.Values
+	parameters = operation.parameters
+
+	response, error := Request(URL, "GET", parameters.Encode())
 
 	if error != nil {
 		return nil, error
@@ -21,6 +29,17 @@ func (operation *Operation) Read() (*Parser, error) {
 	return response, nil
 }
 
-func (operation *Operation) SetParameters(parameters string) {
+func (operation *Operation) AssignParameters(parameters map[string][]string) {
 	operation.parameters = parameters
+}
+
+func (operation *Operation) AppendParameters(parameters map[string][]string) {
+	for parameter, values := range parameters {
+		if parameter[len(parameter)-2:] == "[]" {
+			newValues := append(operation.parameters[parameter], values...)
+			operation.parameters[parameter] = newValues
+		} else {
+			operation.parameters[parameter] = values
+		}
+	}
 }

@@ -14,7 +14,7 @@ func main() {
 		Where("uuid", "4053b259918f6a81b0cac7f2a0e78dcc").
 		Include("relationships.category", "artifacts")
 
-	operation.SetParameters(query.Parameters())
+	operation.AssignParameters(query.Parameters())
 	response, _ := operation.Read()
 
 	for _, resource := range response.Resources {
