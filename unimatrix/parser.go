@@ -11,7 +11,7 @@ type Parser struct {
 	TypeName  string
 	Keys      []string
 	Resources []Resource
-	Errors    []map[string]string
+	Errors    []map[string]interface{}
 }
 
 type JsonResponse map[string]*json.RawMessage
@@ -33,10 +33,10 @@ type AssociationInner struct {
 	Ids      []string `json:"ids"`
 }
 
-type Associations map[string][]map[string]string
+type Associations map[string][]map[string]interface{}
 
 var associationMap = make(map[string]map[string]map[string][]string)
-var resourceIndex = make(map[string]map[string]map[string]string)
+var resourceIndex = make(map[string]map[string]map[string]interface{})
 
 func parseIds(idsInterface []interface{}) []string {
 	var ids []string
@@ -82,18 +82,14 @@ func parseResource(resourceJson map[string]*json.RawMessage) map[string]string {
 func buildResourceIndex(jsonResponse JsonResponse) {
 	for responseKey, responseValue := range jsonResponse {
 		if string([]rune(responseKey)[0]) != "$" {
-			var resourcesJson []map[string]*json.RawMessage
+			var resources []map[string]interface{}
 
-			json.Unmarshal(*responseValue, &resourcesJson)
+			json.Unmarshal(*responseValue, &resources)
 
-			resourceIndex[responseKey] = make(map[string]map[string]string)
+			resourceIndex[responseKey] = make(map[string]map[string]interface{})
 
-			for _, resourceJson := range resourcesJson {
-				var resource map[string]string
-
-				resource = parseResource(resourceJson)
-
-				resourceIndex[responseKey][resource["id"]] = resource
+			for _, resource := range resources {
+				resourceIndex[responseKey][resource["id"].(string)] = resource
 			}
 		}
 	}
@@ -139,8 +135,8 @@ func resources(name string, ids []string) []Resource {
 	return resources
 }
 
-func errors(staticResponse StaticResponse) []map[string]string {
-	var errors []map[string]string
+func errors(staticResponse StaticResponse) []map[string]interface{} {
+	var errors []map[string]interface{}
 
 	for _, resource := range resourceIndex["errors"] {
 		errors = append(errors, resource)
@@ -150,11 +146,9 @@ func errors(staticResponse StaticResponse) []map[string]string {
 }
 
 func (parser *Parser) GetAssociations(name string, id string) Associations {
-	var associations = make(map[string][]map[string]string)
+	var associations = make(map[string][]map[string]interface{})
 
 	for associationType, ids := range associationMap[name][id] {
-		associations[associationType] = []map[string]string{}
-
 		for _, id := range ids {
 			associations[associationType] = append(associations[associationType], resourceIndex[associationType][id])
 		}

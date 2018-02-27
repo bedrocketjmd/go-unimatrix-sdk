@@ -18,6 +18,7 @@ func main() {
 	response, _ := operation.Read()
 
 	for _, resource := range response.Resources {
-		fmt.Println(response.GetAssociations("artifacts", resource["id"]))
+		fmt.Println(resource)
+		fmt.Println(response.GetAssociations("artifacts", resource["id"].(string)))
 	}
 }
