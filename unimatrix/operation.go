@@ -10,8 +10,12 @@ type Operation struct {
 }
 
 func NewOperation(path string) *Operation {
-
 	return &Operation{path: path, parameters: map[string][]string{}}
+}
+
+func NewRealmScopedOperation(realm, resource string) *Operation {
+	path := "/realms/" + realm + "/" + resource
+	return NewOperation(path)
 }
 
 func (operation *Operation) Read() (*Parser, error) {
