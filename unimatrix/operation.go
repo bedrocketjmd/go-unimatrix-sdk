@@ -1,9 +1,5 @@
 package unimatrix
 
-import (
-	"net/url"
-)
-
 type Operation struct {
 	path       string
 	parameters map[string][]string
@@ -21,10 +17,7 @@ func NewRealmScopedOperation(realm, resource string) *Operation {
 func (operation *Operation) Read() (*Parser, error) {
 	URL := GetURL() + operation.path
 
-	var parameters url.Values
-	parameters = operation.parameters
-
-	response, error := Request(URL, "GET", parameters.Encode())
+	response, error := Request(URL, "GET", operation.parameters)
 
 	if error != nil {
 		return nil, error
@@ -32,6 +25,15 @@ func (operation *Operation) Read() (*Parser, error) {
 
 	return response, nil
 }
+
+// func (operation *Operation) Write() (*Parser, error) {
+//   URL := GetURL() + operation.path
+
+//   var parameters url.Values
+//   parameters = operation.parameters
+
+//   response, error := Request()
+// }
 
 func (operation *Operation) AssignParameters(parameters map[string][]string) {
 	operation.parameters = parameters

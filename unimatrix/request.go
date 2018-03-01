@@ -3,9 +3,10 @@ package unimatrix
 import (
 	"io/ioutil"
 	"net/http"
+	"net/url"
 )
 
-func Request(url string, method string, parameters string) (*Parser, error) {
+func Request(url string, method string, parameters map[string][]string) (*Parser, error) {
 	client := &http.Client{}
 
 	req, error := http.NewRequest(method, url, nil)
@@ -14,7 +15,7 @@ func Request(url string, method string, parameters string) (*Parser, error) {
 		return nil, error
 	}
 
-	req.URL.RawQuery = parameters
+	req.URL.RawQuery = RawParameters(parameters)
 
 	resp, error := client.Do(req)
 
@@ -31,4 +32,10 @@ func Request(url string, method string, parameters string) (*Parser, error) {
 	parser := NewParser(bodyText)
 
 	return parser, nil
+}
+
+func RawParameters(parameters map[string][]string) string {
+	var rawParameters url.Values
+	rawParameters = parameters
+	return rawParameters.Encode()
 }
