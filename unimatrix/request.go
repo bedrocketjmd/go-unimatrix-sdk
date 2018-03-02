@@ -1,21 +1,24 @@
 package unimatrix
 
 import (
+	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 )
 
-func Request(url string, method string, parameters map[string][]string) (*Parser, error) {
+func Request(url string, method string, parameters map[string][]string, body interface{}) (*Parser, error) {
 	client := &http.Client{}
 
-	req, error := http.NewRequest(method, url, nil)
+	req, error := http.NewRequest(method, url, bytes.NewBuffer(RequestBody(body)))
 
 	if error != nil {
 		return nil, error
 	}
 
-	req.URL.RawQuery = RawParameters(parameters)
+	req.Header.Add("Content-Type", "application/json")
+	req.URL.RawQuery = RequestParameters(parameters)
 
 	resp, error := client.Do(req)
 
@@ -34,8 +37,20 @@ func Request(url string, method string, parameters map[string][]string) (*Parser
 	return parser, nil
 }
 
-func RawParameters(parameters map[string][]string) string {
-	var rawParameters url.Values
-	rawParameters = parameters
-	return rawParameters.Encode()
+func RequestParameters(parameters map[string][]string) string {
+	var requestParameters url.Values
+	requestParameters = parameters
+	return requestParameters.Encode()
+}
+
+func RequestBody(body interface{}) []byte {
+	if body == nil {
+		return nil
+	} else {
+		requestBody, _ := json.Marshal(body)
+		// if error != nil {
+
+		// }
+		return requestBody
+	}
 }
