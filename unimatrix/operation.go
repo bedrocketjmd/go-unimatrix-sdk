@@ -17,7 +17,7 @@ func NewRealmScopedOperation(realm, resource string) *Operation {
 func (operation *Operation) Read() (*Parser, error) {
 	URL := GetURL() + operation.path
 
-	response, error := Request(URL, "GET", operation.parameters)
+	response, error := Request(URL, "GET", operation.parameters, nil)
 
 	if error != nil {
 		return nil, error
@@ -26,14 +26,20 @@ func (operation *Operation) Read() (*Parser, error) {
 	return response, nil
 }
 
-// func (operation *Operation) Write() (*Parser, error) {
-//   URL := GetURL() + operation.path
+func (operation *Operation) Write(node string, objects interface{}) (*Parser, error) {
+	URL := GetURL() + operation.path
 
-//   var parameters url.Values
-//   parameters = operation.parameters
+	var body = make(map[string]interface{})
+	body[node] = objects
 
-//   response, error := Request()
-// }
+	response, error := Request(URL, "POST", operation.parameters, body)
+
+	if error != nil {
+		return nil, error
+	}
+
+	return response, nil
+}
 
 func (operation *Operation) AssignParameters(parameters map[string][]string) {
 	operation.parameters = parameters
