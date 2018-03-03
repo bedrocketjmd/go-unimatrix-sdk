@@ -11,7 +11,13 @@ import (
 func Request(url string, method string, parameters map[string][]string, body interface{}) (*Parser, error) {
 	client := &http.Client{}
 
-	req, error := http.NewRequest(method, url, bytes.NewBuffer(RequestBody(body)))
+	requestBody, error := RequestBody(body)
+
+	if error != nil {
+		return nil, error
+	}
+
+	req, error := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
 
 	if error != nil {
 		return nil, error
@@ -43,14 +49,11 @@ func RequestParameters(parameters map[string][]string) string {
 	return requestParameters.Encode()
 }
 
-func RequestBody(body interface{}) []byte {
+func RequestBody(body interface{}) ([]byte, error) {
 	if body == nil {
-		return nil
+		return nil, nil
 	} else {
-		requestBody, _ := json.Marshal(body)
-		// if error != nil {
-
-		// }
-		return requestBody
+		requestBody, error := json.Marshal(body)
+		return requestBody, error
 	}
 }

@@ -23,7 +23,7 @@ func main() {
 		"artifacts",
 	)
 
-	// pass in access token - add function to form request body?
+	// pass in access token
 	operation.AssignParameters(map[string][]string{"access_token": []string{accessToken}})
 
 	// create artifact
