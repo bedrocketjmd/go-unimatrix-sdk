@@ -1,26 +1,38 @@
 package unimatrix
 
-import (
-	"net/url"
-)
-
 type Operation struct {
 	path       string
 	parameters map[string][]string
 }
 
 func NewOperation(path string) *Operation {
-
 	return &Operation{path: path, parameters: map[string][]string{}}
+}
+
+func NewRealmScopedOperation(realm, resource string) *Operation {
+	path := "/realms/" + realm + "/" + resource
+	return NewOperation(path)
 }
 
 func (operation *Operation) Read() (*Parser, error) {
 	URL := GetURL() + operation.path
 
-	var parameters url.Values
-	parameters = operation.parameters
+	response, error := Request(URL, "GET", operation.parameters, nil)
 
-	response, error := Request(URL, "GET", parameters.Encode())
+	if error != nil {
+		return nil, error
+	}
+
+	return response, nil
+}
+
+func (operation *Operation) Write(node string, objects interface{}) (*Parser, error) {
+	URL := GetURL() + operation.path
+
+	var body = make(map[string]interface{})
+	body[node] = objects
+
+	response, error := Request(URL, "POST", operation.parameters, body)
 
 	if error != nil {
 		return nil, error
