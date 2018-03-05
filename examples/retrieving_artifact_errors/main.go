@@ -13,7 +13,7 @@ func main() {
 	query := unimatrix.NewQuery().
 		Where("uuid", "does-not-exist")
 
-	operation.SetParameters(query.Parameters())
+	operation.AssignParameters(query.Parameters())
 	response, _ := operation.Read()
 
 	fmt.Println(response.Errors)
