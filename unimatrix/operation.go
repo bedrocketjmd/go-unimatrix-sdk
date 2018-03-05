@@ -1,12 +1,13 @@
 package unimatrix
 
 type Operation struct {
-	path       string
+	url        string
 	parameters map[string][]string
 }
 
 func NewOperation(path string) *Operation {
-	return &Operation{path: path, parameters: map[string][]string{}}
+	url := GetURL() + path
+	return &Operation{url: url, parameters: map[string][]string{}}
 }
 
 func NewRealmScopedOperation(realm, resource string) *Operation {
@@ -15,30 +16,31 @@ func NewRealmScopedOperation(realm, resource string) *Operation {
 }
 
 func (operation *Operation) Read() (*Parser, error) {
-	URL := GetURL() + operation.path
-
-	response, error := Request(URL, "GET", operation.parameters, nil)
-
-	if error != nil {
-		return nil, error
-	}
-
-	return response, nil
+	response, error := Request(operation.url, "GET", operation.parameters, nil)
+	return response, error
 }
 
 func (operation *Operation) Write(node string, objects interface{}) (*Parser, error) {
-	URL := GetURL() + operation.path
-
 	var body = make(map[string]interface{})
 	body[node] = objects
 
-	response, error := Request(URL, "POST", operation.parameters, body)
+	response, error := Request(operation.url, "POST", operation.parameters, body)
+	return response, error
+}
 
-	if error != nil {
-		return nil, error
-	}
+func (operation *Operation) Destroy() (*Parser, error) {
+	response, error := Request(operation.url, "DELETE", operation.parameters, nil)
+	return response, error
+}
 
-	return response, nil
+func (operation *Operation) DestroyByUUID(uuid string) (*Parser, error) {
+	operation.AppendParameters(map[string][]string{"uuid": []string{uuid}})
+	return operation.Destroy()
+}
+
+func (operation *Operation) DestroyByUUIDs(uuids []string) (*Parser, error) {
+	operation.AppendParameters(map[string][]string{"uuid": uuids})
+	return operation.Destroy()
 }
 
 func (operation *Operation) AssignParameters(parameters map[string][]string) {

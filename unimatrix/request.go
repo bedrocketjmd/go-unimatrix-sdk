@@ -40,6 +40,7 @@ func Request(url string, method string, parameters map[string][]string, body int
 
 	parser := NewParser(bodyText)
 
+	// return error from api
 	return parser, nil
 }
 
