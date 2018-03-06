@@ -15,12 +15,12 @@ func NewRealmScopedOperation(realm, resource string) *Operation {
 	return NewOperation(path)
 }
 
-func (operation *Operation) Read() (*Parser, error) {
+func (operation *Operation) Read() ([]Resource, error) {
 	response, error := Request(operation.url, "GET", operation.parameters, nil)
 	return response, error
 }
 
-func (operation *Operation) Write(node string, objects interface{}) (*Parser, error) {
+func (operation *Operation) Write(node string, objects interface{}) ([]Resource, error) {
 	var body = make(map[string]interface{})
 	body[node] = objects
 
@@ -28,17 +28,17 @@ func (operation *Operation) Write(node string, objects interface{}) (*Parser, er
 	return response, error
 }
 
-func (operation *Operation) Destroy() (*Parser, error) {
+func (operation *Operation) Destroy() ([]Resource, error) {
 	response, error := Request(operation.url, "DELETE", operation.parameters, nil)
 	return response, error
 }
 
-func (operation *Operation) DestroyByUUID(uuid string) (*Parser, error) {
+func (operation *Operation) DestroyByUUID(uuid string) ([]Resource, error) {
 	operation.AppendParameters(map[string][]string{"uuid": []string{uuid}})
 	return operation.Destroy()
 }
 
-func (operation *Operation) DestroyByUUIDs(uuids []string) (*Parser, error) {
+func (operation *Operation) DestroyByUUIDs(uuids []string) ([]Resource, error) {
 	operation.AppendParameters(map[string][]string{"uuid": uuids})
 	return operation.Destroy()
 }
