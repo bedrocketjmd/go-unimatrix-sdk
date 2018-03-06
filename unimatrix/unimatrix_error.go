@@ -37,10 +37,15 @@ func NewUnimatrixError(err interface{}) error {
 		unimatrixError.errorStatus = response.Status
 		unimatrixError.errorCode = response.StatusCode
 
+		if response.StatusCode == 500 {
+			unimatrixError.errorMessage = response.Status + ": An unexpected error occurred."
+			return &unimatrixError
+		}
+
 		bodyText, error := ioutil.ReadAll(response.Body)
 
 		if error != nil {
-			unimatrixError.errorMessage = error.Error()
+			unimatrixError.errorMessage = response.Status + ": An unexpected error occurred."
 			return &unimatrixError
 		}
 
@@ -49,7 +54,7 @@ func NewUnimatrixError(err interface{}) error {
 		error = json.Unmarshal([]byte(bodyText), &errorResponse)
 
 		if error != nil {
-			unimatrixError.errorMessage = error.Error()
+			unimatrixError.errorMessage = response.Status + ": An unexpected error occurred."
 			return &unimatrixError
 		}
 
@@ -57,7 +62,7 @@ func NewUnimatrixError(err interface{}) error {
 	} else if e, ok := err.(error); ok {
 		unimatrixError.errorMessage = e.Error()
 	} else {
-		unimatrixError.errorMessage = "An unknown error occurred."
+		unimatrixError.errorMessage = "An unexpected error occurred."
 	}
 
 	return &unimatrixError

@@ -40,6 +40,10 @@ func (accessTokenOperation *AccessTokenOperation) Read() (map[string]interface{}
 		return nil, NewUnimatrixError(error)
 	}
 
+	if resp.StatusCode != 200 {
+		return nil, NewUnimatrixError(resp)
+	}
+
 	bodyText, error := ioutil.ReadAll(resp.Body)
 
 	if error != nil {
