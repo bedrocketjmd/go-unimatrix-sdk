@@ -14,7 +14,7 @@ func main() {
 		Where("uuid", "does-not-exist")
 
 	operation.AssignParameters(query.Parameters())
-	response, _ := operation.Read()
+	_, error := operation.Read()
 
-	fmt.Println(response.Errors)
+	fmt.Println(error)
 }

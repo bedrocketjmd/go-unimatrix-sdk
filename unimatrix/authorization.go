@@ -20,10 +20,10 @@ func (accessTokenOperation *AccessTokenOperation) Read() (map[string]interface{}
 
 	authorizationURL := GetAuthorizationURL() + "/token"
 
-	req, err := http.NewRequest("POST", authorizationURL, nil)
+	req, error := http.NewRequest("POST", authorizationURL, nil)
 
-	if err != nil {
-		return nil, err
+	if error != nil {
+		return nil, NewUnimatrixError(error)
 	}
 
 	query := req.URL.Query()
@@ -34,21 +34,38 @@ func (accessTokenOperation *AccessTokenOperation) Read() (map[string]interface{}
 
 	req.URL.RawQuery = query.Encode()
 
-	resp, err := client.Do(req)
+	resp, error := client.Do(req)
 
-	if err != nil {
-		return nil, err
+	if error != nil {
+		return nil, NewUnimatrixError(error)
 	}
 
-	bodyText, err := ioutil.ReadAll(resp.Body)
+	if resp.StatusCode != 200 {
+		return nil, NewUnimatrixError(resp)
+	}
 
-	if err != nil {
-		return nil, err
+	bodyText, error := ioutil.ReadAll(resp.Body)
+
+	if error != nil {
+		return nil, NewUnimatrixError(error)
 	}
 
 	var tokenResponse map[string]interface{}
 
-	json.Unmarshal([]byte(bodyText), &tokenResponse)
+	error = json.Unmarshal([]byte(bodyText), &tokenResponse)
+
+	if error != nil {
+		return nil, NewUnimatrixError(error)
+	}
+
+	if tokenResponse["error"] != nil {
+		err := UnimatrixError{}
+
+		err.errorMessage = tokenResponse["error"].(string) + ": " + tokenResponse["error_description"].(string)
+		err.errorStatus = tokenResponse["error"].(string)
+
+		return nil, &err
+	}
 
 	return tokenResponse, nil
 }
