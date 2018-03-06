@@ -42,6 +42,11 @@ func NewUnimatrixError(err interface{}) error {
 			return &unimatrixError
 		}
 
+		if response.StatusCode == 504 {
+			unimatrixError.errorMessage = response.Status + ": A gateway timeout has occurred."
+			return &unimatrixError
+		}
+
 		bodyText, error := ioutil.ReadAll(response.Body)
 
 		if error != nil {
