@@ -13,7 +13,7 @@ func main() {
 	clientId := os.Getenv("KEYMAKER_CLIENT")
 	clientSecret := os.Getenv("KEYMAKER_SECRET")
 	accessTokenOperation := unimatrix.NewAccessTokenOperation(clientId, clientSecret)
-	tokenResponse, _ := accessTokenOperation.AccessToken()
+	tokenResponse, _ := accessTokenOperation.Read()
 	accessToken := tokenResponse["access_token"].(string)
 
 	// new operation
