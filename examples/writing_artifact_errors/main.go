@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"../../unimatrix"
 )
@@ -29,5 +30,24 @@ func main() {
 	// write artifact
 	_, error := operation.Write("artifacts", []map[string]string{artifact})
 
+	// 403
 	fmt.Println(error)
+
+	// get access token
+	unimatrix.SetAuthorizationURL("http://us-west-2.keymaker.acceptance.boxxspring.net")
+	clientId := os.Getenv("KEYMAKER_CLIENT")
+	clientSecret := os.Getenv("KEYMAKER_SECRET")
+	accessTokenOperation := unimatrix.NewAccessTokenOperation(clientId, clientSecret)
+	tokenResponse, _ := accessTokenOperation.Read()
+	accessTokenValid := tokenResponse["access_token"].(string)
+
+	// pass in access token
+	operation.AssignParameters(map[string][]string{"access_token": []string{accessTokenValid}})
+
+	artifact["uuid"] = "does-not-exist"
+
+	response, _ := operation.Write("artifacts", []map[string]string{artifact})
+
+	// 200 with attribute errors
+	fmt.Println(response[0].GetErrors())
 }

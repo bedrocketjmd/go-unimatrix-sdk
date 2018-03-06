@@ -7,8 +7,10 @@ import (
 )
 
 func main() {
-	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
-	operation := unimatrix.NewOperation("/realms/1e338862026376dd593425404a4f75c0/artifacts")
+	operation := unimatrix.NewRealmScopedOperation(
+		"1e338862026376dd593425404a4f75c0",
+		"artifacts",
+	)
 
 	query := unimatrix.NewQuery().
 		Where("uuid", "does-not-exist")
