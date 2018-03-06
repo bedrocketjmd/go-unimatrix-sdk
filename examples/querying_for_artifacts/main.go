@@ -7,9 +7,9 @@ import (
 )
 
 func main() {
-	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
+	unimatrix.SetURL("http://us-west-2.api.unimatrix.io")
 	operation := unimatrix.NewRealmScopedOperation(
-		"5cbc6bb3db90e2f1236e005f9054776c",
+		"a5784c49027366bd728b3c24e6bf55c3",
 		"artifacts",
 	)
 
@@ -21,10 +21,10 @@ func main() {
 
 	// create a new query
 	query := unimatrix.NewQuery().
-		Where("type_name:eq", "video_artifact").
-		WhereArray("name:in", []string{"Final Nick", "test with categoryyy"}).
-		WhereArray("relationships.category:eq", []string{"59419fff92047f6e01a98ed35eb21f10"}).
-		Where("description:search", "stuff")
+		Where("type_name:eq", "isp_video_artifact").
+		WhereArray("name:in", []string{"SDK Test isp video artifact", "SDK Test isp video artifact 2"}).
+		WhereArray("relationships.category:eq", []string{"072eb7ff34010da7034a562e15a4fea3"}).
+		Where("description:search", "Description field test text")
 	fmt.Println("\nQUERY PARAMETERS:")
 	fmt.Println(query.Parameters())
 

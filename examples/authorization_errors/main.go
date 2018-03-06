@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	unimatrix.SetAuthorizationURL("http://us-west-2.keymaker.acceptance.boxxspring.net")
+	unimatrix.SetAuthorizationURL("http://us-west-2.keymaker.boxxspring.net")
 
 	clientId := "1234"
 	clientSecret := "5678"

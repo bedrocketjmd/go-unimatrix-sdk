@@ -7,13 +7,13 @@ import (
 )
 
 func main() {
-	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
+	unimatrix.SetURL("http://us-west-2.api.unimatrix.io")
 	operation := unimatrix.NewRealmScopedOperation(
-		"1e338862026376dd593425404a4f75c0",
+		"a5784c49027366bd728b3c24e6bf55c3",
 		"artifacts",
 	)
 
-	query := unimatrix.NewQuery().Where("uuid", "643a9e056300d54eed7a14066513f435")
+	query := unimatrix.NewQuery().Where("uuid", "040d86e5200117d4c48f9171fe6ede45")
 	operation.AssignParameters(query.Parameters())
 	response, _ := operation.Read()
 
