@@ -14,13 +14,13 @@ func Request(url string, method string, parameters map[string][]string, body int
 	requestBody, error := RequestBody(body)
 
 	if error != nil {
-		return nil, error
+		return nil, NewUnimatrixError(error)
 	}
 
 	req, error := http.NewRequest(method, url, bytes.NewBuffer(requestBody))
 
 	if error != nil {
-		return nil, error
+		return nil, NewUnimatrixError(error)
 	}
 
 	req.Header.Add("Content-Type", "application/json")
@@ -29,13 +29,17 @@ func Request(url string, method string, parameters map[string][]string, body int
 	resp, error := client.Do(req)
 
 	if error != nil {
-		return nil, error
+		return nil, NewUnimatrixError(error)
+	}
+
+	if resp.StatusCode != 200 {
+		return nil, NewUnimatrixError(resp)
 	}
 
 	bodyText, error := ioutil.ReadAll(resp.Body)
 
 	if error != nil {
-		return nil, error
+		return nil, NewUnimatrixError(error)
 	}
 
 	parser := NewParser(bodyText)
