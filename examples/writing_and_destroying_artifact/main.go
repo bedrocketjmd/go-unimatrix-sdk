@@ -34,6 +34,11 @@ func main() {
 	artifact["name"] = "Go SDK Test"
 
 	// write artifact
-	response, _ := operation.Write("artifacts", []map[string]string{artifact})
-	fmt.Println(response)
+	writeResponse, _ := operation.Write("artifacts", []map[string]string{artifact})
+	fmt.Println(writeResponse)
+	uuid := writeResponse.Resources[0]["uuid"].(string)
+
+	// destroy artifact
+	destroyResponse, _ := operation.DestroyByUUID(uuid)
+	fmt.Println(destroyResponse)
 }
