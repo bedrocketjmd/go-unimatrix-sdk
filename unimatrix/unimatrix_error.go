@@ -15,12 +15,12 @@ type UnimatrixError struct {
 
 type ErrorResponse struct {
 	This struct {
-		Name     string  `json:"name"`
-		TypeName string  `json:"type_name"`
-		Ids      []int64 `json:"ids"`
+		Name     string   `json:"name"`
+		TypeName string   `json:"type_name"`
+		Ids      []string `json:"ids"`
 	} `json:"$this"`
 	Errors []struct {
-		ID       int64  `json:"id"`
+		ID       string `json:"id"`
 		TypeName string `json:"type_name"`
 		Message  string `json:"message"`
 	} `json:"errors"`
