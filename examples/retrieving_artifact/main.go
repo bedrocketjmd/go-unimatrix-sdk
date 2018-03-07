@@ -18,6 +18,8 @@ func main() {
 	resources, _ := operation.Read()
 
 	for _, resource := range resources {
-		fmt.Println(resource)
+		fmt.Println(resource.GetAttributes())
+		fmt.Println(resource.GetUUID())
+		fmt.Println(resource.GetAttributeAsString("name"))
 	}
 }
