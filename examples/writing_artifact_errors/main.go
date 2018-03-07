@@ -19,14 +19,14 @@ func main() {
 	operation.SetAccessToken(accessToken)
 
 	// create artifact
-	artifact := map[string]string{}
-	artifact["type_name"] = "video_artifact"
-	artifact["provider"] = "Boxxspring"
-	artifact["provider_uid"] = "go_sdk_test"
-	artifact["name"] = "Go SDK Test"
+	artifact := unimatrix.NewResource("artifacts", make(map[string]interface{}), nil, nil)
+	artifact.SetAttribute("type_name", "video_artifact")
+	artifact.SetAttribute("provider", "Boxxspring")
+	artifact.SetAttribute("provider_uid", "go_sdk_test")
+	artifact.SetAttribute("name", "Go SDK Test")
 
 	// write artifact
-	_, error := operation.Write("artifacts", []map[string]string{artifact})
+	_, error := operation.WriteResource("artifacts", *artifact)
 
 	// 403
 	fmt.Println(error)
@@ -42,9 +42,9 @@ func main() {
 	// pass in access token
 	operation.AssignParameters(map[string][]string{"access_token": []string{accessTokenValid}})
 
-	artifact["uuid"] = "does-not-exist"
+	artifact.SetAttribute("uuid", "does-not-exist")
 
-	response, _ := operation.Write("artifacts", []map[string]string{artifact})
+	response, _ := operation.WriteResource("artifacts", *artifact)
 
 	// 200 with attribute errors
 	fmt.Println(response[0].GetErrors())

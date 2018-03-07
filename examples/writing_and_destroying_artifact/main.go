@@ -34,7 +34,7 @@ func main() {
 	// write artifact
 	writeResponse, _ := operation.WriteResource("artifacts", *artifact)
 	fmt.Println(writeResponse)
-	uuid := writeResponse[0].GetUUID()
+	uuid, _ := writeResponse[0].GetUUID()
 
 	// destroy artifact
 	destroyResponse, _ := operation.DestroyByUUID(uuid)
