@@ -16,9 +16,7 @@ func main() {
 		"1e338862026376dd593425404a4f75c0",
 		"artifacts",
 	)
-
-	// pass in access token
-	operation.AssignParameters(map[string][]string{"access_token": []string{accessToken}})
+	operation.SetAccessToken(accessToken)
 
 	// create artifact
 	artifact := map[string]string{}
