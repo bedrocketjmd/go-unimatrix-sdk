@@ -11,7 +11,6 @@ type Parser struct {
 	TypeName  string
 	Keys      []string
 	Resources []Resource
-	Errors    []ResourceError
 }
 
 type JsonResponse map[string]*json.RawMessage
@@ -125,7 +124,7 @@ func resources(name string, ids []string) []Resource {
 	return resources
 }
 
-func NewParser(rawResponse []byte) *Parser {
+func NewParser(rawResponse []byte) (*Parser, error) {
 	var staticResponse StaticResponse
 	var jsonResponse JsonResponse
 	var associationIndex AssociationIndex
@@ -133,6 +132,10 @@ func NewParser(rawResponse []byte) *Parser {
 
 	json.Unmarshal([]byte(rawResponse), &staticResponse)
 	json.Unmarshal([]byte(rawResponse), &jsonResponse)
+
+	if jsonResponse == nil {
+		return nil, NewUnimatrixError("Unable to parse json response")
+	}
 
 	this := staticResponse.This
 	ids = parseIds(this.Ids)
@@ -145,6 +148,5 @@ func NewParser(rawResponse []byte) *Parser {
 		TypeName:  this.TypeName,
 		Keys:      ids,
 		Resources: resources(this.Name, ids),
-		Errors:    staticResponse.Errors,
-	}
+	}, nil
 }
