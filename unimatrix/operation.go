@@ -53,7 +53,7 @@ func (operation *Operation) DestroyByUUID(uuid string) ([]Resource, error) {
 }
 
 func (operation *Operation) DestroyByUUIDs(uuids []string) ([]Resource, error) {
-	operation.AppendParameters(map[string][]string{"uuid": uuids})
+	operation.AppendParameters(map[string][]string{"uuid:in[]": uuids})
 	return operation.Destroy()
 }
 
