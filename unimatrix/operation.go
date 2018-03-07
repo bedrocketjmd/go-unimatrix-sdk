@@ -16,21 +16,35 @@ func NewRealmScopedOperation(realm, resource string) *Operation {
 }
 
 func (operation *Operation) Read() ([]Resource, error) {
-	response, error := Request(operation.url, "GET", operation.parameters, nil)
-	return response, error
+	return Request(operation.url, "GET", operation.parameters, nil)
 }
 
-func (operation *Operation) Write(node string, objects interface{}) ([]Resource, error) {
-	var body = make(map[string]interface{})
-	body[node] = objects
+func (operation *Operation) Write(body interface{}) ([]Resource, error) {
+	return Request(operation.url, "POST", operation.parameters, body)
+}
 
-	response, error := Request(operation.url, "POST", operation.parameters, body)
-	return response, error
+func (operation *Operation) WriteResource(node string, resource Resource) ([]Resource, error) {
+	var body = make(map[string][]interface{})
+	var resources []interface{}
+	resources = append(resources, resource.GetAttributes())
+	body[node] = resources
+
+	return operation.Write(body)
+}
+
+func (operation *Operation) WriteResources(node string, resources []Resource) ([]Resource, error) {
+	var body = make(map[string][]interface{})
+	var bodyResources []interface{}
+	for _, resource := range resources {
+		bodyResources = append(bodyResources, resource.GetAttributes())
+	}
+	body[node] = bodyResources
+
+	return operation.Write(body)
 }
 
 func (operation *Operation) Destroy() ([]Resource, error) {
-	response, error := Request(operation.url, "DELETE", operation.parameters, nil)
-	return response, error
+	return Request(operation.url, "DELETE", operation.parameters, nil)
 }
 
 func (operation *Operation) DestroyByUUID(uuid string) ([]Resource, error) {
@@ -56,4 +70,8 @@ func (operation *Operation) AppendParameters(parameters map[string][]string) {
 			operation.parameters[parameter] = values
 		}
 	}
+}
+
+func (operation *Operation) SetAccessToken(token string) {
+	operation.AppendParameters(map[string][]string{"access_token": []string{token}})
 }
