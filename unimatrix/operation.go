@@ -26,7 +26,8 @@ func (operation *Operation) Write(body interface{}) ([]Resource, error) {
 func (operation *Operation) WriteResource(node string, resource Resource) ([]Resource, error) {
 	var body = make(map[string][]interface{})
 	var resources []interface{}
-	resources = append(resources, resource.GetAttributes())
+	resourceAttributes, _ := resource.GetAttributes()
+	resources = append(resources, resourceAttributes)
 	body[node] = resources
 
 	return operation.Write(body)
@@ -36,7 +37,8 @@ func (operation *Operation) WriteResources(node string, resources []Resource) ([
 	var body = make(map[string][]interface{})
 	var bodyResources []interface{}
 	for _, resource := range resources {
-		bodyResources = append(bodyResources, resource.GetAttributes())
+		resourceAttributes, _ := resource.GetAttributes()
+		bodyResources = append(bodyResources, resourceAttributes)
 	}
 	body[node] = bodyResources
 
