@@ -22,21 +22,19 @@ func main() {
 		"1e338862026376dd593425404a4f75c0",
 		"artifacts",
 	)
-
-	// pass in access token
-	operation.AssignParameters(map[string][]string{"access_token": []string{accessToken}})
+	operation.SetAccessToken(accessToken)
 
 	// create artifact
-	artifact := map[string]string{}
-	artifact["type_name"] = "video_artifact"
-	artifact["provider"] = "Boxxspring"
-	artifact["provider_uid"] = "go_sdk_test"
-	artifact["name"] = "Go SDK Test"
+	artifact := unimatrix.NewResource("artifacts", make(map[string]interface{}), nil, nil)
+	artifact.SetAttribute("type_name", "video_artifact")
+	artifact.SetAttribute("provider", "Boxxspring")
+	artifact.SetAttribute("provider_uid", "go_sdk_test")
+	artifact.SetAttribute("name", "Go SDK Test")
 
 	// write artifact
-	writeResponse, _ := operation.Write("artifacts", []map[string]string{artifact})
+	writeResponse, _ := operation.WriteResource("artifacts", *artifact)
 	fmt.Println(writeResponse)
-	uuid := writeResponse.Resources[0]["uuid"].(string)
+	uuid := writeResponse[0].GetUUID()
 
 	// destroy artifact
 	destroyResponse, _ := operation.DestroyByUUID(uuid)
