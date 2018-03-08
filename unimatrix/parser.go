@@ -28,9 +28,13 @@ type StaticResponse struct {
 	Errors           []ResourceError               `json:"errors"`
 }
 
+type ResourceIndex map[string]map[string]Resource
+
 type AssociationIndex map[string]map[string]map[string][]string
 
-var resourceIndex = make(map[string]map[string]Resource)
+var resourceIndex = make(ResourceIndex)
+var associationIndex = make(AssociationIndex)
+var resourceErrors []ResourceError
 
 func parseIds(idsInterface []interface{}) []string {
 	var ids []string
@@ -49,10 +53,10 @@ func parseIds(idsInterface []interface{}) []string {
 	return ids
 }
 
-func buildResourceIndex(name string, jsonResponse JsonResponse, associationIndex AssociationIndex, errors []ResourceError) {
+func buildResourceIndex(jsonResponse JsonResponse, associationIndex AssociationIndex, errors []ResourceError) {
 	for responseKey, responseValue := range jsonResponse {
 		if string([]rune(responseKey)[0]) != "$" && string(responseKey) != "errors" {
-			var resourceAttributes []ResourceAttributes
+			var resourceAttributes []map[string]interface{}
 
 			json.Unmarshal(*responseValue, &resourceAttributes)
 
@@ -60,27 +64,13 @@ func buildResourceIndex(name string, jsonResponse JsonResponse, associationIndex
 
 			for _, resourceAttributes := range resourceAttributes {
 				var id = resourceAttributes["id"].(string)
-				var resourceErrors []ResourceError
-
-				if len(associationIndex[name][id]["errors"]) > 0 {
-					for _, error := range errors {
-						for _, errorId := range associationIndex[name][id]["errors"] {
-							if error.Id == errorId {
-								resourceErrors = append(resourceErrors, error)
-								break
-							}
-						}
-					}
-				}
-
-				resourceIndex[responseKey][id] = *NewResource(responseKey, resourceAttributes, associationIndex[name][id], resourceErrors)
+				resourceIndex[responseKey][id] = *NewResource(responseKey, resourceAttributes)
 			}
 		}
 	}
 }
 
-func buildAssociationIndex(staticResponse StaticResponse) AssociationIndex {
-	var associationIndex = make(AssociationIndex)
+func buildAssociationIndex(staticResponse StaticResponse) {
 	associationTypes := staticResponse.AssociationTypes
 
 	for associationType, _ := range associationTypes {
@@ -108,8 +98,6 @@ func buildAssociationIndex(staticResponse StaticResponse) AssociationIndex {
 			}
 		}
 	}
-
-	return associationIndex
 }
 
 func resources(name string, ids []string) []Resource {
@@ -139,9 +127,10 @@ func NewParser(rawResponse []byte) (*Parser, error) {
 
 	this := staticResponse.This
 	ids = parseIds(this.Ids)
-	associationIndex = buildAssociationIndex(staticResponse)
+	resourceErrors = staticResponse.Errors
 
-	buildResourceIndex(this.Name, jsonResponse, associationIndex, staticResponse.Errors)
+	buildAssociationIndex(staticResponse)
+	buildResourceIndex(jsonResponse, associationIndex, staticResponse.Errors)
 
 	return &Parser{
 		Name:      this.Name,
