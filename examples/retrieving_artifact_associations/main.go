@@ -18,10 +18,13 @@ func main() {
 		Include("relationships.category", "artifacts")
 
 	operation.AssignParameters(query.Parameters())
-	response, _ := operation.Read()
+	resources, _ := operation.Read()
 
-	for _, resource := range response.Resources {
-		fmt.Println(resource)
-		fmt.Println(response.GetAssociations("artifacts", resource["id"].(string)))
+	for _, resource := range resources {
+		associations, _ := resource.GetAssociations()
+		association, _ := resource.GetAssociation("artifact_relationships")
+		associationArtifacts, _ := association[0].GetAssociation("artifacts")
+		fmt.Println(associations)
+		fmt.Println(associationArtifacts)
 	}
 }

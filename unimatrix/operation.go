@@ -15,31 +15,47 @@ func NewRealmScopedOperation(realm, resource string) *Operation {
 	return NewOperation(path)
 }
 
-func (operation *Operation) Read() (*Parser, error) {
-	response, error := Request(operation.url, "GET", operation.parameters, nil)
-	return response, error
+func (operation *Operation) Read() ([]Resource, error) {
+	return Request(operation.url, "GET", operation.parameters, nil)
 }
 
-func (operation *Operation) Write(node string, objects interface{}) (*Parser, error) {
-	var body = make(map[string]interface{})
-	body[node] = objects
-
-	response, error := Request(operation.url, "POST", operation.parameters, body)
-	return response, error
+func (operation *Operation) Write(body interface{}) ([]Resource, error) {
+	return Request(operation.url, "POST", operation.parameters, body)
 }
 
-func (operation *Operation) Destroy() (*Parser, error) {
-	response, error := Request(operation.url, "DELETE", operation.parameters, nil)
-	return response, error
+func (operation *Operation) WriteResource(node string, resource Resource) ([]Resource, error) {
+	var body = make(map[string][]interface{})
+	var resources []interface{}
+	resourceAttributes, _ := resource.GetAttributes()
+	resources = append(resources, resourceAttributes)
+	body[node] = resources
+
+	return operation.Write(body)
 }
 
-func (operation *Operation) DestroyByUUID(uuid string) (*Parser, error) {
+func (operation *Operation) WriteResources(node string, resources []Resource) ([]Resource, error) {
+	var body = make(map[string][]interface{})
+	var bodyResources []interface{}
+	for _, resource := range resources {
+		resourceAttributes, _ := resource.GetAttributes()
+		bodyResources = append(bodyResources, resourceAttributes)
+	}
+	body[node] = bodyResources
+
+	return operation.Write(body)
+}
+
+func (operation *Operation) Destroy() ([]Resource, error) {
+	return Request(operation.url, "DELETE", operation.parameters, nil)
+}
+
+func (operation *Operation) DestroyByUUID(uuid string) ([]Resource, error) {
 	operation.AppendParameters(map[string][]string{"uuid": []string{uuid}})
 	return operation.Destroy()
 }
 
-func (operation *Operation) DestroyByUUIDs(uuids []string) (*Parser, error) {
-	operation.AppendParameters(map[string][]string{"uuid": uuids})
+func (operation *Operation) DestroyByUUIDs(uuids []string) ([]Resource, error) {
+	operation.AppendParameters(map[string][]string{"uuid:in[]": uuids})
 	return operation.Destroy()
 }
 
@@ -56,4 +72,8 @@ func (operation *Operation) AppendParameters(parameters map[string][]string) {
 			operation.parameters[parameter] = values
 		}
 	}
+}
+
+func (operation *Operation) SetAccessToken(token string) {
+	operation.AppendParameters(map[string][]string{"access_token": []string{token}})
 }

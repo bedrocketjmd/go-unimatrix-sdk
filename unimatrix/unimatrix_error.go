@@ -66,6 +66,8 @@ func NewUnimatrixError(err interface{}) error {
 		unimatrixError.errorMessage = response.Status + ": " + errorResponse.Errors[0].Message
 	} else if e, ok := err.(error); ok {
 		unimatrixError.errorMessage = e.Error()
+	} else if str, ok := err.(string); ok {
+		unimatrixError.errorMessage = str
 	} else {
 		unimatrixError.errorMessage = "An unexpected error occurred."
 	}

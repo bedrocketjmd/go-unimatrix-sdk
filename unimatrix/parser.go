@@ -11,7 +11,6 @@ type Parser struct {
 	TypeName  string
 	Keys      []string
 	Resources []Resource
-	Errors    []map[string]interface{}
 }
 
 type JsonResponse map[string]*json.RawMessage
@@ -26,17 +25,16 @@ type StaticResponse struct {
 		Count          int           `json:"count"`
 	} `json:"$this"`
 	AssociationTypes map[string][]*json.RawMessage `json:"$associations"`
+	Errors           []ResourceError               `json:"errors"`
 }
 
-type AssociationInner struct {
-	TypeName string   `json:"type_name"`
-	Ids      []string `json:"ids"`
-}
+type ResourceIndex map[string]map[string]Resource
 
-type Associations map[string][]map[string]interface{}
+type AssociationIndex map[string]map[string]map[string][]string
 
-var associationMap = make(map[string]map[string]map[string][]string)
-var resourceIndex = make(map[string]map[string]map[string]interface{})
+var resourceIndex = make(ResourceIndex)
+var associationIndex = make(AssociationIndex)
+var resourceErrors []ResourceError
 
 func parseIds(idsInterface []interface{}) []string {
 	var ids []string
@@ -55,51 +53,28 @@ func parseIds(idsInterface []interface{}) []string {
 	return ids
 }
 
-func parseResource(resourceJson map[string]*json.RawMessage) map[string]string {
-	var resource = make(map[string]string)
-
-	for key, value := range resourceJson {
-		var attribute string
-		var attributeInterface interface{}
-
-		json.Unmarshal(*value, &attributeInterface)
-
-		switch typedValue := attributeInterface.(type) {
-		case float64:
-			attribute = fmt.Sprintf("%.0f", typedValue)
-		case int:
-			attribute = strconv.Itoa(typedValue)
-		default:
-			json.Unmarshal(*value, &attribute)
-		}
-
-		resource[key] = attribute
-	}
-
-	return resource
-}
-
-func buildResourceIndex(jsonResponse JsonResponse) {
+func buildResourceIndex(jsonResponse JsonResponse, associationIndex AssociationIndex, errors []ResourceError) {
 	for responseKey, responseValue := range jsonResponse {
-		if string([]rune(responseKey)[0]) != "$" {
-			var resources []map[string]interface{}
+		if string([]rune(responseKey)[0]) != "$" && string(responseKey) != "errors" {
+			var resourceAttributes []map[string]interface{}
 
-			json.Unmarshal(*responseValue, &resources)
+			json.Unmarshal(*responseValue, &resourceAttributes)
 
-			resourceIndex[responseKey] = make(map[string]map[string]interface{})
+			resourceIndex[responseKey] = make(map[string]Resource)
 
-			for _, resource := range resources {
-				resourceIndex[responseKey][resource["id"].(string)] = resource
+			for _, resourceAttributes := range resourceAttributes {
+				var id = resourceAttributes["id"].(string)
+				resourceIndex[responseKey][id] = *NewResource(responseKey, resourceAttributes)
 			}
 		}
 	}
 }
 
-func buildAssociationMap(staticResponse StaticResponse) {
+func buildAssociationIndex(staticResponse StaticResponse) {
 	associationTypes := staticResponse.AssociationTypes
 
 	for associationType, _ := range associationTypes {
-		associationMap[associationType] = make(map[string]map[string][]string)
+		associationIndex[associationType] = make(map[string]map[string][]string)
 
 		for _, associationList := range associationTypes[associationType] {
 			var associationOuter map[string]*json.RawMessage
@@ -108,7 +83,7 @@ func buildAssociationMap(staticResponse StaticResponse) {
 			json.Unmarshal(*associationList, &associationOuter)
 			json.Unmarshal(*associationOuter["id"], &associationOuterId)
 
-			associationMap[associationType][associationOuterId] = make(map[string][]string)
+			associationIndex[associationType][associationOuterId] = make(map[string][]string)
 
 			for key, value := range associationOuter {
 				if key != "id" {
@@ -118,7 +93,7 @@ func buildAssociationMap(staticResponse StaticResponse) {
 					json.Unmarshal(*value, &associationInner)
 					json.Unmarshal(*associationInner["ids"], &associationInnerIds)
 
-					associationMap[associationType][associationOuterId][key] = associationInnerIds
+					associationIndex[associationType][associationOuterId][key] = associationInnerIds
 				}
 			}
 		}
@@ -129,53 +104,38 @@ func resources(name string, ids []string) []Resource {
 	var resources []Resource
 
 	for _, id := range ids {
-		resources = append(resources, *NewResource(name, resourceIndex[name][id]))
+		if len(resourceIndex[name]) > 0 {
+			resources = append(resources, resourceIndex[name][id])
+		}
 	}
 
 	return resources
 }
 
-func errors(staticResponse StaticResponse) []map[string]interface{} {
-	var errors []map[string]interface{}
-
-	for _, resource := range resourceIndex["errors"] {
-		errors = append(errors, resource)
-	}
-
-	return errors
-}
-
-func (parser *Parser) GetAssociations(name string, id string) Associations {
-	var associations = make(map[string][]map[string]interface{})
-
-	for associationType, ids := range associationMap[name][id] {
-		for _, id := range ids {
-			associations[associationType] = append(associations[associationType], resourceIndex[associationType][id])
-		}
-	}
-
-	return associations
-}
-
-func NewParser(rawResponse []byte) *Parser {
+func NewParser(rawResponse []byte) (*Parser, error) {
 	var staticResponse StaticResponse
 	var jsonResponse JsonResponse
+	var associationIndex AssociationIndex
 	var ids []string
 
 	json.Unmarshal([]byte(rawResponse), &staticResponse)
 	json.Unmarshal([]byte(rawResponse), &jsonResponse)
 
+	if jsonResponse == nil {
+		return nil, NewUnimatrixError("Unable to parse json response")
+	}
+
 	this := staticResponse.This
 	ids = parseIds(this.Ids)
+	resourceErrors = staticResponse.Errors
 
-	buildResourceIndex(jsonResponse)
-	buildAssociationMap(staticResponse)
+	buildAssociationIndex(staticResponse)
+	buildResourceIndex(jsonResponse, associationIndex, staticResponse.Errors)
 
 	return &Parser{
 		Name:      this.Name,
 		TypeName:  this.TypeName,
 		Keys:      ids,
 		Resources: resources(this.Name, ids),
-		Errors:    errors(staticResponse),
-	}
+	}, nil
 }

@@ -49,7 +49,7 @@ func main() {
 
 	response, _ := operation.Read()
 	fmt.Println("\nRESPONSE:")
-	for _, resource := range response.Resources {
+	for _, resource := range response {
 		fmt.Println(resource)
 	}
 }
