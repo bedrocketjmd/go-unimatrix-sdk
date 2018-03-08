@@ -1,7 +1,5 @@
 package unimatrix
 
-type ResourceAttributes map[string]interface{}
-
 type ResourceAssociations map[string][]Resource
 
 type ResourceError struct {
@@ -12,20 +10,15 @@ type ResourceError struct {
 }
 
 type Resource struct {
-	name             string
-	attributes       ResourceAttributes
-	associationsById map[string][]string
-	errors           []ResourceError
+	id         string
+	name       string
+	attributes map[string]interface{}
 }
 
-var associations = ResourceAssociations{}
-
-func NewResource(name string, resourceAttributes ResourceAttributes, associationsById map[string][]string, errors []ResourceError) *Resource {
+func NewResource(name string, resourceAttributes map[string]interface{}) *Resource {
 	return &Resource{
-		name:             name,
-		attributes:       resourceAttributes,
-		associationsById: associationsById,
-		errors:           errors,
+		name:       name,
+		attributes: resourceAttributes,
 	}
 }
 
@@ -37,7 +30,7 @@ func (resource *Resource) GetUUID() (string, error) {
 	}
 }
 
-func (resource *Resource) GetAttributes() (ResourceAttributes, error) {
+func (resource *Resource) GetAttributes() (map[string]interface{}, error) {
 	if resource.attributes != nil {
 		return resource.attributes, nil
 	} else {
@@ -74,20 +67,34 @@ func (resource *Resource) SetAttribute(name string, value interface{}) {
 }
 
 func (resource *Resource) GetErrors() ([]ResourceError, error) {
-	if resource.errors != nil {
-		return resource.errors, nil
+	var errors []ResourceError
+
+	if len(associationIndex[resource.name][resource.attributes["id"].(string)]["errors"]) > 0 {
+		for _, error := range resourceErrors {
+			for _, errorId := range associationIndex[resource.name][resource.attributes["id"].(string)]["errors"] {
+				if error.Id == errorId {
+					errors = append(errors, error)
+					break
+				}
+			}
+		}
+	}
+
+	if errors != nil {
+		return errors, nil
 	} else {
 		return nil, NewUnimatrixError("Unable to retrieve errors")
 	}
 }
 
 func (resource *Resource) GetAssociations() (ResourceAssociations, error) {
-	var associations ResourceAssociations
+	var associations = make(ResourceAssociations)
+	var associationsById = associationIndex[resource.name][resource.attributes["id"].(string)]
 
-	if resource.associationsById != nil {
-		for associationType, ids := range resource.associationsById {
+	if associationsById != nil {
+		for associationType, ids := range associationsById {
 			for _, id := range ids {
-				associations[associationType] = append(associations[associationType], resourceIndex[resource.name][id])
+				associations[associationType] = append(associations[associationType], resourceIndex[associationType][id])
 			}
 		}
 
@@ -99,9 +106,10 @@ func (resource *Resource) GetAssociations() (ResourceAssociations, error) {
 
 func (resource *Resource) GetAssociation(name string) ([]Resource, error) {
 	var association []Resource
+	var associationsById = associationIndex[resource.name][resource.attributes["id"].(string)]
 
-	if resource.associationsById[name] != nil {
-		for _, id := range resource.associationsById[name] {
+	if associationsById[name] != nil {
+		for _, id := range associationsById[name] {
 			association = append(association, resourceIndex[name][id])
 		}
 
