@@ -25,7 +25,7 @@ func main() {
 	operation.SetAccessToken(accessToken)
 
 	// create artifact
-	artifact := unimatrix.NewResource("artifacts", make(map[string]interface{}), nil, nil)
+	artifact := unimatrix.NewResource("artifacts", make(map[string]interface{}))
 	artifact.SetAttribute("type_name", "video_artifact")
 	artifact.SetAttribute("provider", "Boxxspring")
 	artifact.SetAttribute("provider_uid", "go_sdk_test")

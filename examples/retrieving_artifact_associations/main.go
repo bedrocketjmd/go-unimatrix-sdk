@@ -21,7 +21,10 @@ func main() {
 	resources, _ := operation.Read()
 
 	for _, resource := range resources {
-		fmt.Println(resource.GetAssociations())
-		fmt.Println(resource.GetAssociation("artifact_relationships")[0].GetAssociation("artifacts"))
+		associations, _ := resource.GetAssociations()
+		association, _ := resource.GetAssociation("artifact_relationships")
+		associationArtifacts, _ := association[0].GetAssociation("artifacts")
+		fmt.Println(associations)
+		fmt.Println(associationArtifacts)
 	}
 }

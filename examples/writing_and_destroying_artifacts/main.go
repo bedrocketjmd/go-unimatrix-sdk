@@ -25,13 +25,13 @@ func main() {
 	operation.SetAccessToken(accessToken)
 
 	// create artifacts
-	artifact1 := unimatrix.NewResource("artifacts", make(map[string]interface{}), nil, nil)
+	artifact1 := unimatrix.NewResource("artifacts", make(map[string]interface{}))
 	artifact1.SetAttribute("type_name", "video_artifact")
 	artifact1.SetAttribute("provider", "Boxxspring")
 	artifact1.SetAttribute("provider_uid", "go_sdk_test")
 	artifact1.SetAttribute("name", "Go SDK Test")
 
-	artifact2 := unimatrix.NewResource("artifacts", make(map[string]interface{}), nil, nil)
+	artifact2 := unimatrix.NewResource("artifacts", make(map[string]interface{}))
 	artifact2.SetAttribute("type_name", "video_artifact")
 	artifact2.SetAttribute("provider", "Boxxspring")
 	artifact2.SetAttribute("provider_uid", "go_sdk_test")
