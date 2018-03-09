@@ -68,7 +68,7 @@ func main() {
 
 	fmt.Print("Waiting for distribution to complete")
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 15; i++ {
 		time.Sleep(1 * time.Second)
 		fmt.Print(".")
 
@@ -92,7 +92,7 @@ func main() {
 
 	fmt.Print("Waiting for distributed artifact to be removed")
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 15; i++ {
 		time.Sleep(500 * time.Millisecond)
 		fmt.Print(".")
 
