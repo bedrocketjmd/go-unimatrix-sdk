@@ -21,5 +21,6 @@ func main() {
 		fmt.Println(resource.GetAttributes())
 		fmt.Println(resource.GetUUID())
 		fmt.Println(resource.GetAttributeAsString("name"))
+		fmt.Println(resource.GetRawAttributes())
 	}
 }

@@ -1,5 +1,7 @@
 package unimatrix
 
+import "encoding/json"
+
 type ResourceAssociations map[string][]Resource
 
 type ResourceError struct {
@@ -10,15 +12,29 @@ type ResourceError struct {
 }
 
 type Resource struct {
-	id         string
-	name       string
-	attributes map[string]interface{}
+	id            string
+	name          string
+	attributes    map[string]interface{}
+	rawAttributes *json.RawMessage
 }
 
-func NewResource(name string, resourceAttributes map[string]interface{}) *Resource {
+func NewResource(name string, attributesInterface interface{}) *Resource {
+	var attributes map[string]interface{}
+	var rawAttributes *json.RawMessage
+
+	if assertedAttributes, ok := attributesInterface.(map[string]interface{}); ok {
+		attributes = assertedAttributes
+	}
+
+	if assertedAttributes, ok := attributesInterface.(*json.RawMessage); ok {
+		rawAttributes = assertedAttributes
+		json.Unmarshal(*assertedAttributes, &attributes)
+	}
+
 	return &Resource{
-		name:       name,
-		attributes: resourceAttributes,
+		name:          name,
+		attributes:    attributes,
+		rawAttributes: rawAttributes,
 	}
 }
 
@@ -27,6 +43,14 @@ func (resource *Resource) GetUUID() (string, error) {
 		return uuid, nil
 	} else {
 		return "", NewUnimatrixError("Unable to retrieve UUID")
+	}
+}
+
+func (resource *Resource) GetRawAttributes() (*json.RawMessage, error) {
+	if resource.rawAttributes != nil {
+		return resource.rawAttributes, nil
+	} else {
+		return nil, NewUnimatrixError("Unable to retrieve raw attributes")
 	}
 }
 

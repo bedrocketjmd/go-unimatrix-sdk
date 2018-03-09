@@ -32,6 +32,10 @@ type ResourceIndex map[string]map[string]Resource
 
 type AssociationIndex map[string]map[string]map[string][]string
 
+type ResourceId struct {
+	Id string `json:"id"`
+}
+
 var resourceIndex = make(ResourceIndex)
 var associationIndex = make(AssociationIndex)
 var resourceErrors []ResourceError
@@ -56,15 +60,16 @@ func parseIds(idsInterface []interface{}) []string {
 func buildResourceIndex(jsonResponse JsonResponse, associationIndex AssociationIndex, errors []ResourceError) {
 	for responseKey, responseValue := range jsonResponse {
 		if string([]rune(responseKey)[0]) != "$" && string(responseKey) != "errors" {
-			var resourceAttributes []map[string]interface{}
-
-			json.Unmarshal(*responseValue, &resourceAttributes)
+			var attributesListRaw []*json.RawMessage
+			json.Unmarshal(*responseValue, &attributesListRaw)
 
 			resourceIndex[responseKey] = make(map[string]Resource)
 
-			for _, resourceAttributes := range resourceAttributes {
-				var id = resourceAttributes["id"].(string)
-				resourceIndex[responseKey][id] = *NewResource(responseKey, resourceAttributes)
+			for _, attributesRaw := range attributesListRaw {
+				var resourceId ResourceId
+				json.Unmarshal(*attributesRaw, &resourceId)
+
+				resourceIndex[responseKey][resourceId.Id] = *NewResource(responseKey, attributesRaw)
 			}
 		}
 	}
