@@ -68,14 +68,12 @@ func main() {
 
 	fmt.Print("Waiting for distribution to complete")
 
-	distributionReadResponse, _ := distributionOperation.Read()
-
 	for i := 0; i < 10; i++ {
 		time.Sleep(1 * time.Second)
 		fmt.Print(".")
 
-		distributionReadResponse, _ = distributionOperation.Read()
-		state, _ := distributionReadResponse[0].GetAttributeAsString("state")
+		distributionWriteResponse, _ = distributionOperation.Read()
+		state, _ := distributionWriteResponse[0].GetAttributeAsString("state")
 
 		if state == "added" {
 			fmt.Println("\nDistribution Completed")
@@ -83,7 +81,7 @@ func main() {
 		}
 	}
 
-	fmt.Println(distributionReadResponse)
+	fmt.Println(distributionWriteResponse)
 	fmt.Println("*****************************************")
 
 	// removing distribution
@@ -94,14 +92,12 @@ func main() {
 
 	fmt.Print("Waiting for distributed artifact to be removed")
 
-	distributionReadResponse, _ = distributionOperation.Read()
-
 	for i := 0; i < 10; i++ {
 		time.Sleep(500 * time.Millisecond)
 		fmt.Print(".")
 
-		distributionReadResponse, _ = distributionOperation.Read()
-		state, _ := distributionReadResponse[0].GetAttributeAsString("state")
+		destroyResponse, _ = distributionOperation.Read()
+		state, _ := destroyResponse[0].GetAttributeAsString("state")
 
 		if state == "removed" {
 			fmt.Println("\nDistributed artifact removed")
@@ -109,5 +105,5 @@ func main() {
 		}
 	}
 
-	fmt.Println(distributionReadResponse)
+	fmt.Println(destroyResponse)
 }
