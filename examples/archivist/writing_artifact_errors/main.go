@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"../../unimatrix"
+	"../../../unimatrix"
 )
 
 func main() {

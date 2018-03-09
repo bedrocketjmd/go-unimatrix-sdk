@@ -2,18 +2,19 @@ package main
 
 import (
 	"fmt"
+	"os"
 
-	"../../unimatrix"
+	"../../../unimatrix"
 )
 
 func main() {
 	unimatrix.SetAuthorizationURL("http://us-west-2.keymaker.acceptance.boxxspring.net")
 
-	clientId := "1234"
-	clientSecret := "5678"
+	clientId := os.Getenv("KEYMAKER_CLIENT")
+	clientSecret := os.Getenv("KEYMAKER_SECRET")
 	accessTokenOperation := unimatrix.NewAccessTokenOperation(clientId, clientSecret)
 
-	_, error := accessTokenOperation.Read()
+	tokenResponse, _ := accessTokenOperation.Read()
 
-	fmt.Println(error)
+	fmt.Println(tokenResponse)
 }
