@@ -104,41 +104,29 @@ func (resource *Resource) GetErrors() ([]ResourceError, error) {
 		}
 	}
 
-	if errors != nil {
-		return errors, nil
-	} else {
-		return nil, NewUnimatrixError("Unable to retrieve errors")
-	}
+	return errors, nil
 }
 
 func (resource *Resource) GetAssociations() (ResourceAssociations, error) {
 	var associations = make(ResourceAssociations)
 	var associationsById = associationIndex[resource.name][resource.attributes["id"].(string)]
 
-	if associationsById != nil {
-		for associationType, ids := range associationsById {
-			for _, id := range ids {
-				associations[associationType] = append(associations[associationType], resourceIndex[associationType][id])
-			}
+	for associationType, ids := range associationsById {
+		for _, id := range ids {
+			associations[associationType] = append(associations[associationType], resourceIndex[associationType][id])
 		}
-
-		return associations, nil
-	} else {
-		return nil, NewUnimatrixError("Unable to retrieve associations")
 	}
+
+	return associations, nil
 }
 
 func (resource *Resource) GetAssociation(name string) ([]Resource, error) {
 	var association []Resource
 	var associationsById = associationIndex[resource.name][resource.attributes["id"].(string)]
 
-	if associationsById[name] != nil {
-		for _, id := range associationsById[name] {
-			association = append(association, resourceIndex[name][id])
-		}
-
-		return association, nil
-	} else {
-		return nil, NewUnimatrixError("Unable to retrieve association")
+	for _, id := range associationsById[name] {
+		association = append(association, resourceIndex[name][id])
 	}
+
+	return association, nil
 }
