@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"../../unimatrix"
+	"../../../unimatrix"
 )
 
 func main() {

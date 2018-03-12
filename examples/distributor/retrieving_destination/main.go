@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"../../unimatrix"
+	"../../../unimatrix"
 )
 
 func main() {
@@ -20,23 +20,17 @@ func main() {
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
 	operation := unimatrix.NewRealmScopedOperation(
 		"1e338862026376dd593425404a4f75c0",
-		"artifacts",
+		"destinations",
 	)
 	operation.SetAccessToken(accessToken)
 
-	// create artifact
-	artifact := unimatrix.NewResource("artifacts", make(map[string]interface{}))
-	artifact.SetAttribute("type_name", "video_artifact")
-	artifact.SetAttribute("provider", "Boxxspring")
-	artifact.SetAttribute("provider_uid", "go_sdk_test")
-	artifact.SetAttribute("name", "Go SDK Test")
+	query := unimatrix.NewQuery().
+		Where("uuid", "5d13f81990d38685e4ee2fdde50fde75")
 
-	// write artifact
-	writeResponse, _ := operation.WriteResource("artifacts", *artifact)
-	fmt.Println(writeResponse)
-	uuid, _ := writeResponse[0].GetUUID()
+	operation.AppendParameters(query.Parameters())
 
-	// destroy artifact
-	destroyResponse, _ := operation.DestroyByUUID(uuid)
-	fmt.Println(destroyResponse)
+	response, _ := operation.Read()
+	for _, resource := range response {
+		fmt.Println(resource)
+	}
 }
