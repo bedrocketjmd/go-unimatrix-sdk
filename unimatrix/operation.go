@@ -15,15 +15,15 @@ func NewRealmScopedOperation(realm, resource string) *Operation {
 	return NewOperation(path)
 }
 
-func (operation *Operation) Read() ([]Resource, error) {
+func (operation *Operation) Read() (*Parser, error) {
 	return Request(operation.url, "GET", operation.parameters, nil)
 }
 
-func (operation *Operation) Write(body interface{}) ([]Resource, error) {
+func (operation *Operation) Write(body interface{}) (*Parser, error) {
 	return Request(operation.url, "POST", operation.parameters, body)
 }
 
-func (operation *Operation) WriteResource(node string, resource Resource) ([]Resource, error) {
+func (operation *Operation) WriteResource(node string, resource Resource) (*Parser, error) {
 	var body = make(map[string][]interface{})
 	var resources []interface{}
 	resourceAttributes, _ := resource.Attributes()
@@ -33,7 +33,7 @@ func (operation *Operation) WriteResource(node string, resource Resource) ([]Res
 	return operation.Write(body)
 }
 
-func (operation *Operation) WriteResources(node string, resources []Resource) ([]Resource, error) {
+func (operation *Operation) WriteResources(node string, resources []Resource) (*Parser, error) {
 	var body = make(map[string][]interface{})
 	var bodyResources []interface{}
 	for _, resource := range resources {
@@ -45,16 +45,16 @@ func (operation *Operation) WriteResources(node string, resources []Resource) ([
 	return operation.Write(body)
 }
 
-func (operation *Operation) Destroy() ([]Resource, error) {
+func (operation *Operation) Destroy() (*Parser, error) {
 	return Request(operation.url, "DELETE", operation.parameters, nil)
 }
 
-func (operation *Operation) DestroyByUUID(uuid string) ([]Resource, error) {
+func (operation *Operation) DestroyByUUID(uuid string) (*Parser, error) {
 	operation.AppendParameters(map[string][]string{"uuid": []string{uuid}})
 	return operation.Destroy()
 }
 
-func (operation *Operation) DestroyByUUIDs(uuids []string) ([]Resource, error) {
+func (operation *Operation) DestroyByUUIDs(uuids []string) (*Parser, error) {
 	operation.AppendParameters(map[string][]string{"uuid:in[]": uuids})
 	return operation.Destroy()
 }
