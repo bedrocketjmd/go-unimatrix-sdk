@@ -19,7 +19,8 @@ func main() {
 		Include("relationships.category", "artifacts")
 
 	operation.AssignParameters(query.Parameters())
-	resources, _ := operation.Read()
+	response, _ := operation.Read()
+	resources, _ := response.Resources()
 	artifact := resources[0]
 
 	// get all associations as ResourceAssociations type - map[string][]Resource

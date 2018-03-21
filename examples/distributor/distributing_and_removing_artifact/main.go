@@ -35,9 +35,10 @@ func main() {
 	// write artifact
 	fmt.Println("Writing artifact")
 	artifactWriteResponse, _ := artifactOperation.WriteResource("artifacts", *artifact)
-	fmt.Println(artifactWriteResponse)
+	artifacts, _ := artifactWriteResponse.Resources()
+	fmt.Println(artifacts)
 	fmt.Println("*****************************************")
-	artifact_uuid, _ := artifactWriteResponse[0].UUID()
+	artifact_uuid, _ := artifacts[0].UUID()
 
 	// new distribution operation
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
@@ -57,9 +58,10 @@ func main() {
 	// write distribution
 	fmt.Println("Writing distribution")
 	distributionWriteResponse, _ := distributionOperation.WriteResource("distributions", *distribution)
-	fmt.Println(distributionWriteResponse)
+	distributions, _ := distributionWriteResponse.Resources()
+	fmt.Println(distributions)
 	fmt.Println("*****************************************")
-	distributionUuid, _ := distributionWriteResponse[0].UUID()
+	distributionUuid, _ := distributions[0].UUID()
 
 	query := unimatrix.NewQuery().
 		Where("uuid", distributionUuid)
@@ -73,7 +75,8 @@ func main() {
 		fmt.Print(".")
 
 		distributionWriteResponse, _ = distributionOperation.Read()
-		state, _ := distributionWriteResponse[0].AttributeAsString("state")
+		distributions, _ = distributionWriteResponse.Resources()
+		state, _ := distributions[0].AttributeAsString("state")
 
 		if state == "added" {
 			fmt.Println("\nDistribution Completed")
@@ -87,7 +90,8 @@ func main() {
 	// removing distribution
 	fmt.Println("Removing distributed artifact")
 	destroyResponse, _ := distributionOperation.DestroyByUUID(distributionUuid)
-	fmt.Println(destroyResponse)
+	distributions, _ = destroyResponse.Resources()
+	fmt.Println(distributions)
 	fmt.Println("*****************************************")
 
 	fmt.Print("Waiting for distributed artifact to be removed")
@@ -97,7 +101,8 @@ func main() {
 		fmt.Print(".")
 
 		destroyResponse, _ = distributionOperation.Read()
-		state, _ := destroyResponse[0].AttributeAsString("state")
+		distributions, _ = destroyResponse.Resources()
+		state, _ := distributions[0].AttributeAsString("state")
 
 		if state == "removed" {
 			fmt.Println("\nDistributed artifact removed")

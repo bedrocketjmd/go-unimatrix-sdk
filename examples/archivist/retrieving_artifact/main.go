@@ -15,7 +15,9 @@ func main() {
 
 	query := unimatrix.NewQuery().Where("uuid", "643a9e056300d54eed7a14066513f435")
 	operation.AssignParameters(query.Parameters())
-	resources, _ := operation.Read()
+	response, _ := operation.Read()
+
+	resources, _ := response.Resources()
 
 	for _, resource := range resources {
 		fmt.Println(resource.Attributes())

@@ -45,7 +45,8 @@ func main() {
 	artifact.SetAttribute("uuid", "does-not-exist")
 
 	response, _ := operation.WriteResource("artifacts", *artifact)
+	resources, _ := response.Resources()
 
 	// 200 with attribute errors
-	fmt.Println(response[0].Errors())
+	fmt.Println(resources[0].Errors())
 }

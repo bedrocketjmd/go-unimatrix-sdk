@@ -41,9 +41,10 @@ func main() {
 
 	// write artifacts
 	writeResponse, _ := operation.WriteResources("artifacts", artifacts)
-	fmt.Println(writeResponse)
+	resources, _ := writeResponse.Resources()
+	fmt.Println(resources)
 	var uuids []string
-	for _, artifact := range writeResponse {
+	for _, artifact := range resources {
 		uuid, _ := artifact.UUID()
 		uuids = append(uuids, uuid)
 	}
