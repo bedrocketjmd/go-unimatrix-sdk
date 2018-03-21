@@ -47,5 +47,5 @@ func main() {
 	response, _ := operation.WriteResource("artifacts", *artifact)
 
 	// 200 with attribute errors
-	fmt.Println(response[0].GetErrors())
+	fmt.Println(response[0].Errors())
 }

@@ -37,7 +37,7 @@ func main() {
 	artifactWriteResponse, _ := artifactOperation.WriteResource("artifacts", *artifact)
 	fmt.Println(artifactWriteResponse)
 	fmt.Println("*****************************************")
-	artifact_uuid, _ := artifactWriteResponse[0].GetUUID()
+	artifact_uuid, _ := artifactWriteResponse[0].UUID()
 
 	// new distribution operation
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
@@ -59,7 +59,7 @@ func main() {
 	distributionWriteResponse, _ := distributionOperation.WriteResource("distributions", *distribution)
 	fmt.Println(distributionWriteResponse)
 	fmt.Println("*****************************************")
-	distributionUuid, _ := distributionWriteResponse[0].GetUUID()
+	distributionUuid, _ := distributionWriteResponse[0].UUID()
 
 	query := unimatrix.NewQuery().
 		Where("uuid", distributionUuid)
@@ -73,7 +73,7 @@ func main() {
 		fmt.Print(".")
 
 		distributionWriteResponse, _ = distributionOperation.Read()
-		state, _ := distributionWriteResponse[0].GetAttributeAsString("state")
+		state, _ := distributionWriteResponse[0].AttributeAsString("state")
 
 		if state == "added" {
 			fmt.Println("\nDistribution Completed")
@@ -97,7 +97,7 @@ func main() {
 		fmt.Print(".")
 
 		destroyResponse, _ = distributionOperation.Read()
-		state, _ := destroyResponse[0].GetAttributeAsString("state")
+		state, _ := destroyResponse[0].AttributeAsString("state")
 
 		if state == "removed" {
 			fmt.Println("\nDistributed artifact removed")

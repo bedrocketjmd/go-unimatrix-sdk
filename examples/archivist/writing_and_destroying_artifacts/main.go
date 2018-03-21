@@ -44,7 +44,7 @@ func main() {
 	fmt.Println(writeResponse)
 	var uuids []string
 	for _, artifact := range writeResponse {
-		uuid, _ := artifact.GetUUID()
+		uuid, _ := artifact.UUID()
 		uuids = append(uuids, uuid)
 	}
 

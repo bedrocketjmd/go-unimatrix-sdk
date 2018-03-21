@@ -6,7 +6,7 @@ type Operation struct {
 }
 
 func NewOperation(path string) *Operation {
-	url := GetURL() + path
+	url := URL() + path
 	return &Operation{url: url, parameters: map[string][]string{}}
 }
 
@@ -26,7 +26,7 @@ func (operation *Operation) Write(body interface{}) ([]Resource, error) {
 func (operation *Operation) WriteResource(node string, resource Resource) ([]Resource, error) {
 	var body = make(map[string][]interface{})
 	var resources []interface{}
-	resourceAttributes, _ := resource.GetAttributes()
+	resourceAttributes, _ := resource.Attributes()
 	resources = append(resources, resourceAttributes)
 	body[node] = resources
 
@@ -37,7 +37,7 @@ func (operation *Operation) WriteResources(node string, resources []Resource) ([
 	var body = make(map[string][]interface{})
 	var bodyResources []interface{}
 	for _, resource := range resources {
-		resourceAttributes, _ := resource.GetAttributes()
+		resourceAttributes, _ := resource.Attributes()
 		bodyResources = append(bodyResources, resourceAttributes)
 	}
 	body[node] = bodyResources

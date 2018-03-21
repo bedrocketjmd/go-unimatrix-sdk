@@ -15,7 +15,7 @@ type configuration struct {
 var configurationInstance *configuration
 var configurationSetup sync.Once
 
-func GetConfiguration() *configuration {
+func Configuration() *configuration {
 	configurationSetup.Do(func() {
 		configurationInstance = &configuration{}
 		configurationInstance.URL = defaultURL
@@ -25,17 +25,17 @@ func GetConfiguration() *configuration {
 }
 
 func SetURL(url string) {
-	GetConfiguration().URL = url
+	Configuration().URL = url
 }
 
-func GetURL() string {
-	return GetConfiguration().URL
+func URL() string {
+	return Configuration().URL
 }
 
 func SetAuthorizationURL(url string) {
-	GetConfiguration().authorizationURL = url
+	Configuration().authorizationURL = url
 }
 
-func GetAuthorizationURL() string {
-	return GetConfiguration().authorizationURL
+func AuthorizationURL() string {
+	return Configuration().authorizationURL
 }

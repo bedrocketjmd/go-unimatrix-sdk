@@ -18,9 +18,9 @@ func main() {
 	resources, _ := operation.Read()
 
 	for _, resource := range resources {
-		fmt.Println(resource.GetAttributes())
-		fmt.Println(resource.GetUUID())
-		fmt.Println(resource.GetAttributeAsString("name"))
-		fmt.Println(resource.GetRawAttributes())
+		fmt.Println(resource.Attributes())
+		fmt.Println(resource.UUID())
+		fmt.Println(resource.AttributeAsString("name"))
+		fmt.Println(resource.RawAttributes())
 	}
 }
