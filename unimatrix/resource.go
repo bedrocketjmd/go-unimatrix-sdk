@@ -38,7 +38,7 @@ func NewResource(name string, attributesInterface interface{}) *Resource {
 	}
 }
 
-func (resource *Resource) GetUUID() (string, error) {
+func (resource *Resource) UUID() (string, error) {
 	if uuid, ok := resource.attributes["uuid"].(string); ok {
 		return uuid, nil
 	} else {
@@ -46,7 +46,7 @@ func (resource *Resource) GetUUID() (string, error) {
 	}
 }
 
-func (resource *Resource) GetRawAttributes() (*json.RawMessage, error) {
+func (resource *Resource) RawAttributes() (*json.RawMessage, error) {
 	if resource.rawAttributes != nil {
 		return resource.rawAttributes, nil
 	} else {
@@ -54,7 +54,7 @@ func (resource *Resource) GetRawAttributes() (*json.RawMessage, error) {
 	}
 }
 
-func (resource *Resource) GetAttributes() (map[string]interface{}, error) {
+func (resource *Resource) Attributes() (map[string]interface{}, error) {
 	if resource.attributes != nil {
 		return resource.attributes, nil
 	} else {
@@ -62,7 +62,7 @@ func (resource *Resource) GetAttributes() (map[string]interface{}, error) {
 	}
 }
 
-func (resource *Resource) GetAttributeAsString(name string) (string, error) {
+func (resource *Resource) AttributeAsString(name string) (string, error) {
 	if attribute, ok := resource.attributes[name].(string); ok {
 		return attribute, nil
 	} else {
@@ -70,7 +70,7 @@ func (resource *Resource) GetAttributeAsString(name string) (string, error) {
 	}
 }
 
-func (resource *Resource) GetAttributeAsArray(name string) ([]string, error) {
+func (resource *Resource) AttributeAsArray(name string) ([]string, error) {
 	if attribute, ok := resource.attributes[name].([]string); ok {
 		return attribute, nil
 	} else {
@@ -78,7 +78,7 @@ func (resource *Resource) GetAttributeAsArray(name string) ([]string, error) {
 	}
 }
 
-func (resource *Resource) GetAttributeAsMap(name string) (map[string]string, error) {
+func (resource *Resource) AttributeAsMap(name string) (map[string]string, error) {
 	if attribute, ok := resource.attributes[name].(map[string]string); ok {
 		return attribute, nil
 	} else {
@@ -90,7 +90,7 @@ func (resource *Resource) SetAttribute(name string, value interface{}) {
 	resource.attributes[name] = value
 }
 
-func (resource *Resource) GetErrors() ([]ResourceError, error) {
+func (resource *Resource) Errors() ([]ResourceError, error) {
 	var errors []ResourceError
 
 	if len(associationIndex[resource.name][resource.attributes["id"].(string)]["errors"]) > 0 {
@@ -107,7 +107,7 @@ func (resource *Resource) GetErrors() ([]ResourceError, error) {
 	return errors, nil
 }
 
-func (resource *Resource) GetAssociations() (ResourceAssociations, error) {
+func (resource *Resource) Associations() (ResourceAssociations, error) {
 	var associations = make(ResourceAssociations)
 	var associationsById = associationIndex[resource.name][resource.attributes["id"].(string)]
 
@@ -120,7 +120,7 @@ func (resource *Resource) GetAssociations() (ResourceAssociations, error) {
 	return associations, nil
 }
 
-func (resource *Resource) GetAssociation(name string) ([]Resource, error) {
+func (resource *Resource) Association(name string) ([]Resource, error) {
 	var association []Resource
 	var associationsById = associationIndex[resource.name][resource.attributes["id"].(string)]
 

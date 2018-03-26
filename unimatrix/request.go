@@ -8,7 +8,7 @@ import (
 	"net/url"
 )
 
-func Request(url string, method string, parameters map[string][]string, body interface{}) ([]Resource, error) {
+func Request(url string, method string, parameters map[string][]string, body interface{}) (*Parser, error) {
 	client := &http.Client{}
 
 	requestBody, error := RequestBody(body)
@@ -48,7 +48,7 @@ func Request(url string, method string, parameters map[string][]string, body int
 		return nil, error
 	}
 
-	return parser.Resources, nil
+	return parser, nil
 }
 
 func RequestParameters(parameters map[string][]string) string {

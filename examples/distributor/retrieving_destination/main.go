@@ -30,7 +30,8 @@ func main() {
 	operation.AppendParameters(query.Parameters())
 
 	response, _ := operation.Read()
-	for _, resource := range response {
+	resources, _ := response.Resources()
+	for _, resource := range resources {
 		fmt.Println(resource)
 	}
 }
