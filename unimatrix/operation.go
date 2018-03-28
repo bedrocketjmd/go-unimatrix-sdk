@@ -15,15 +15,15 @@ func NewRealmScopedOperation(realm, resource string) *Operation {
 	return NewOperation(path)
 }
 
-func (operation *Operation) Read() (*Parser, error) {
+func (operation *Operation) Read() (*Response, error) {
 	return Request(operation.url, "GET", operation.parameters, nil)
 }
 
-func (operation *Operation) Write(body interface{}) (*Parser, error) {
+func (operation *Operation) Write(body interface{}) (*Response, error) {
 	return Request(operation.url, "POST", operation.parameters, body)
 }
 
-func (operation *Operation) WriteResource(node string, resource Resource) (*Parser, error) {
+func (operation *Operation) WriteResource(node string, resource Resource) (*Response, error) {
 	var body = make(map[string][]interface{})
 	var resources []interface{}
 	resourceAttributes, _ := resource.Attributes()
@@ -33,7 +33,7 @@ func (operation *Operation) WriteResource(node string, resource Resource) (*Pars
 	return operation.Write(body)
 }
 
-func (operation *Operation) WriteResources(node string, resources []Resource) (*Parser, error) {
+func (operation *Operation) WriteResources(node string, resources []Resource) (*Response, error) {
 	var body = make(map[string][]interface{})
 	var bodyResources []interface{}
 	for _, resource := range resources {
@@ -45,16 +45,16 @@ func (operation *Operation) WriteResources(node string, resources []Resource) (*
 	return operation.Write(body)
 }
 
-func (operation *Operation) Destroy() (*Parser, error) {
+func (operation *Operation) Destroy() (*Response, error) {
 	return Request(operation.url, "DELETE", operation.parameters, nil)
 }
 
-func (operation *Operation) DestroyByUUID(uuid string) (*Parser, error) {
+func (operation *Operation) DestroyByUUID(uuid string) (*Response, error) {
 	operation.AppendParameters(map[string][]string{"uuid": []string{uuid}})
 	return operation.Destroy()
 }
 
-func (operation *Operation) DestroyByUUIDs(uuids []string) (*Parser, error) {
+func (operation *Operation) DestroyByUUIDs(uuids []string) (*Response, error) {
 	operation.AppendParameters(map[string][]string{"uuid:in[]": uuids})
 	return operation.Destroy()
 }
