@@ -45,7 +45,8 @@ func main() {
 		startTimeValue := startTimeSplit[1]
 		startTimeOperator := strings.Split(startTimeSplit[0], ".")[1]
 		startTimeParam := "originated_at:" + startTimeOperator
-		startTimeQuery := unimatrix.NewQuery().Where(startTimeParam, startTimeValue)
+		startTimeQuery := unimatrix.NewQuery().
+			Where(startTimeParam, startTimeValue)
 		operation.AppendParameters(startTimeQuery.Parameters())
 	}
 
