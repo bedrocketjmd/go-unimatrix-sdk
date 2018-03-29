@@ -9,8 +9,8 @@ import (
 )
 
 // Test Command
-// go run <path-to-controller> <realm-uuid> <station-uuids> <start-time-gte>
-// go run samples/schedules_controller/main.go 4327d464be1ef01c81e01dd7c65a2f7e c14569f66b4544098cc435bedfa44179,76f35575c9a239a5e0606d37c0f8dec2 2018-02-25T03:00:00Z
+// go run <path-to-controller> <realm-uuid> <station-uuids> <start-time>
+// go run samples/schedules_controller/main.go 4327d464be1ef01c81e01dd7c65a2f7e c14569f66b4544098cc435bedfa44179,76f35575c9a239a5e0606d37c0f8dec2 startTime.gte=2018-02-25T03:00:00Z
 
 func main() {
 	// Environment
@@ -18,10 +18,10 @@ func main() {
 
 	// Params
 	realmUuid := os.Args[1]
-	station_uuids := strings.Split(os.Args[2], ",")
-	var startTimeGte string
+	stationUuids := strings.Split(os.Args[2], ",")
+	var startTime string
 	if len(os.Args) > 3 {
-		startTimeGte = os.Args[3]
+		startTime = os.Args[3]
 	}
 
 	typeNames := []string{
@@ -29,26 +29,24 @@ func main() {
 		"schedule_episode_artifact",
 		"schedule_competition_artifact",
 	}
-	// timeParameters := []string{
-	// 	"startTime.gt",
-	// 	"startTime.gte",
-	// 	"startTime.lt",
-	// 	"startTime.lte",
-	// }
 
 	// Query By Station
 	operation := unimatrix.NewRealmScopedOperation(realmUuid, "artifacts")
 
 	query := unimatrix.NewQuery().
 		WhereArray("type_name:in", typeNames).
-		WhereArray("relationships.category:in", station_uuids).
+		WhereArray("relationships.category:in", stationUuids).
 		Include("relationships.category", "artifacts")
 
 	operation.AssignParameters(query.Parameters())
 
-	if startTimeGte != "" {
-		timeQuery := unimatrix.NewQuery().Where("originated_at:gte", startTimeGte)
-		operation.AppendParameters(timeQuery.Parameters())
+	if startTime != "" {
+		startTimeSplit := strings.Split(startTime, "=")
+		startTimeValue := startTimeSplit[1]
+		startTimeOperator := strings.Split(startTimeSplit[0], ".")[1]
+		startTimeParam := "originated_at:" + startTimeOperator
+		startTimeQuery := unimatrix.NewQuery().Where(startTimeParam, startTimeValue)
+		operation.AppendParameters(startTimeQuery.Parameters())
 	}
 
 	response, _ := operation.Read()
