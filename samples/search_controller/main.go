@@ -10,7 +10,7 @@ import (
 
 // Test Command
 // go run <path-to-controller> <realm-uuid> <resource-type> <start-time> <name> <show-name> <call-sign>
-// go run samples/search_controller/main.go 4327d464be1ef01c81e01dd7c65a2f7e null startTime.gte=2018-02-25T03:00:00Z testing "Amy is Testing" "Amy is Testing"
+// go run samples/search_controller/main.go 4327d464be1ef01c81e01dd7c65a2f7e "" startTime.gte=2018-02-25T03:00:00Z testing "Amy is Testing" "Amy is Testing"
 
 func main() {
 	// Environment
@@ -64,7 +64,7 @@ func main() {
 
 	resourceTypePresent := false
 
-	// Type Names
+	// - Type Names
 	typeNamesToQuery := typeNames
 
 	if resourceType != "" {
@@ -85,7 +85,7 @@ func main() {
 
 	operation.AppendParameters(typeNamesQuery.Parameters())
 
-	// Start Time
+	// - Start Time
 	if startTime != "" {
 		if !resourceTypePresent {
 			typeNamesQuery = unimatrix.NewQuery().
@@ -102,14 +102,14 @@ func main() {
 		operation.AppendParameters(startTimeQuery.Parameters())
 	}
 
-	// Name
+	// - Name
 	if name != "" {
 		nameQuery := unimatrix.NewQuery().
 			Where("name:search", name)
 		operation.AppendParameters(nameQuery.Parameters())
 	}
 
-	// Show Name
+	// - Show Name
 	if showName != "" {
 		showNameQuery := unimatrix.NewQuery().
 			Where("name", showName).
@@ -117,7 +117,7 @@ func main() {
 		operation.AppendParameters(showNameQuery.Parameters())
 	}
 
-	// Call Sign
+	// - Call Sign
 	if callSign != "" {
 		callSignQuery := unimatrix.NewQuery().
 			Where("short_name", callSign)
