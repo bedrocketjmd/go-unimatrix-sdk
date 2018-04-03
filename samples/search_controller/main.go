@@ -10,11 +10,29 @@ import (
 
 // Test Command
 // go run <path-to-controller> <realm-uuid> <resource-type> <start-time> <name> <show-name> <call-sign>
-// go run samples/search_controller/main.go 4327d464be1ef01c81e01dd7c65a2f7e "" startTime.gte=2018-02-25T03:00:00Z testing "Amy is Testing" "Amy is Testing"
+//
+//
+// Query Not Filtered
+// go run samples/search_controller/main.go 66f3d77a8d522efab771baf740384037
+//
+// Query Filtered by Resource Type
+// go run samples/search_controller/main.go 66f3d77a8d522efab771baf740384037 movie
+//
+// Query Filtered by Resource Type and Start Time
+// go run samples/search_controller/main.go 66f3d77a8d522efab771baf740384037 schedule_movie startTime.gte=2018-02-28T00:22:00Z
+//
+// Query Filtered by Resource Type and Name
+// go run samples/search_controller/main.go 66f3d77a8d522efab771baf740384037 movie "" "Down with Love"
+//
+// Query Filtered by Show Name
+// go run samples/search_controller/main.go 66f3d77a8d522efab771baf740384037 "" "" "" "Taxicab Confessions"
+//
+// Query Filtered by Resource Type and Call Sign
+// go run samples/search_controller/main.go 66f3d77a8d522efab771baf740384037 movie "" "" "" "DWL"
 
 func main() {
 	// Environment
-	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
+	unimatrix.SetURL("http://us-west-2.api.unimatrix.io")
 
 	// Constants
 	var typeNames = []string{
@@ -113,7 +131,7 @@ func main() {
 	if showName != "" {
 		showNameQuery := unimatrix.NewQuery().
 			Where("name", showName).
-			Where("relationships.ctegory", "show_artifact")
+			Where("type_name", "show_artifact")
 		operation.AppendParameters(showNameQuery.Parameters())
 	}
 

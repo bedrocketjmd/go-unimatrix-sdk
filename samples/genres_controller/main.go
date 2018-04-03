@@ -9,11 +9,14 @@ import (
 
 // Test Command
 // go run <path-to-controller> <realm-uuid>
-// go run samples/genres_controller/main.go 4327d464be1ef01c81e01dd7c65a2f7e
+//
+//
+// Query:
+// go run samples/genres_controller/main.go 66f3d77a8d522efab771baf740384037
 
 func main() {
 	// Environment
-	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
+	unimatrix.SetURL("http://us-west-2.api.unimatrix.io")
 
 	// Params
 	realmUuid := os.Args[1]

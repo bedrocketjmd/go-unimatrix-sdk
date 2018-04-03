@@ -9,11 +9,14 @@ import (
 
 // Test Command
 // go run <path-to-controller> <realm-uuid> <asset-uuid>
-// go run samples/assets_controller/main.go 1e338862026376dd593425404a4f75c0 ff4cd4840eba37f2e2e63fdf7cba2f11
+//
+//
+// Read:
+// go run samples/assets_controller/main.go 66f3d77a8d522efab771baf740384037 f7d8bd902ecf36eb04ddd90424d9673d
 
 func main() {
 	// Environment
-	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
+	unimatrix.SetURL("http://us-west-2.api.unimatrix.io")
 
 	// Params
 	realmUuid := os.Args[1]
@@ -33,5 +36,5 @@ func main() {
 
 	fmt.Println("Read Asset UUID:", assetUuid)
 	fmt.Println("*****************")
-	fmt.Println(resources[0])
+	fmt.Println(resources)
 }

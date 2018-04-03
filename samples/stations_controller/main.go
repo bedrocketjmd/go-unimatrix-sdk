@@ -7,13 +7,19 @@ import (
 	"../../unimatrix"
 )
 
-// Test Command
+// Test Commands
 // go run <path-to-controller> <realm-uuid> <station-uuid>
-// go run samples/stations_controller/main.go 4327d464be1ef01c81e01dd7c65a2f7e 76f35575c9a239a5e0606d37c0f8dec2
+//
+//
+// Query:
+// go run samples/stations_controller/main.go 66f3d77a8d522efab771baf740384037
+//
+// Read:
+// go run samples/stations_controller/main.go 66f3d77a8d522efab771baf740384037 36addaa58c744a85d8d9fecfa8e17750
 
 func main() {
 	// Environment
-	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
+	unimatrix.SetURL("http://us-west-2.api.unimatrix.io")
 
 	// Params
 	realmUuid := os.Args[1]
@@ -22,7 +28,7 @@ func main() {
 		stationUuid = os.Args[2]
 	}
 
-	// Query or Read
+	// Query
 	operation := unimatrix.NewRealmScopedOperation(realmUuid, "artifacts")
 	queryType := "Query"
 
@@ -31,6 +37,7 @@ func main() {
 
 	operation.AssignParameters(query.Parameters())
 
+	// Read
 	if stationUuid != "" {
 		queryType = "Read"
 		readQuery := unimatrix.NewQuery().Where("uuid", stationUuid)

@@ -10,11 +10,20 @@ import (
 
 // Test Command
 // go run <path-to-controller> <realm-uuid> <station-uuids> <start-time>
-// go run samples/schedules_controller/main.go 4327d464be1ef01c81e01dd7c65a2f7e c14569f66b4544098cc435bedfa44179,76f35575c9a239a5e0606d37c0f8dec2 startTime.gte=2018-02-25T03:00:00Z
+//
+//
+// Query Filtered By Single Station:
+// go run samples/schedules_controller/main.go 66f3d77a8d522efab771baf740384037 36addaa58c744a85d8d9fecfa8e17750
+//
+// Query Filtered By Multiple Stations:
+// go run samples/schedules_controller/main.go 66f3d77a8d522efab771baf740384037 36addaa58c744a85d8d9fecfa8e17750,eebde4cc8e8070849bcf172bae5f21f3
+//
+// Query Filtered By Multiple Stations and Start Time:
+// go run samples/schedules_controller/main.go 66f3d77a8d522efab771baf740384037 36addaa58c744a85d8d9fecfa8e17750,eebde4cc8e8070849bcf172bae5f21f3 startTime.gte=2018-02-28T00:23:00Z
 
 func main() {
 	// Environment
-	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
+	unimatrix.SetURL("http://us-west-2.api.unimatrix.io")
 
 	// Params
 	realmUuid := os.Args[1]
@@ -30,9 +39,10 @@ func main() {
 		"schedule_competition_artifact",
 	}
 
-	// Query By Station
+	// Query
 	operation := unimatrix.NewRealmScopedOperation(realmUuid, "artifacts")
 
+	// - Filtered by Stations
 	query := unimatrix.NewQuery().
 		WhereArray("type_name:in", typeNames).
 		WhereArray("relationships.category:in", stationUuids).
@@ -40,6 +50,7 @@ func main() {
 
 	operation.AssignParameters(query.Parameters())
 
+	// - Filtered by Start Time
 	if startTime != "" {
 		startTimeSplit := strings.Split(startTime, "=")
 		startTimeValue := startTimeSplit[1]
