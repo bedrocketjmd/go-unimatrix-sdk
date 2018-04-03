@@ -7,13 +7,13 @@ import (
 )
 
 type Parser struct {
-	ReturnedName           string
-	ReturnedTypeName       string
-	Keys                   []string
-	ReturnedResources      []Resource
-	ReturnedCount          int
-	ReturnedUnlimitedCount int
-	ReturnedOffset         int
+	Name           string
+	TypeName       string
+	Keys           []string
+	Resources      []Resource
+	Count          int
+	UnlimitedCount int
+	Offset         int
 }
 
 type JsonResponse map[string]*json.RawMessage
@@ -141,40 +141,12 @@ func NewParser(rawResponse []byte) (*Parser, error) {
 	buildResourceIndex(jsonResponse, associationIndex, staticResponse.Errors)
 
 	return &Parser{
-		ReturnedName:           this.Name,
-		ReturnedTypeName:       this.TypeName,
-		Keys:                   ids,
-		ReturnedResources:      resources(this.Name, ids),
-		ReturnedCount:          this.Count,
-		ReturnedUnlimitedCount: this.UnlimitedCount,
-		ReturnedOffset:         this.Offset,
+		Name:           this.Name,
+		TypeName:       this.TypeName,
+		Keys:           ids,
+		Resources:      resources(this.Name, ids),
+		Count:          this.Count,
+		UnlimitedCount: this.UnlimitedCount,
+		Offset:         this.Offset,
 	}, nil
-}
-
-func (parser *Parser) Name() (string, error) {
-	return parser.ReturnedName, nil
-}
-
-func (parser *Parser) TypeName() (string, error) {
-	return parser.ReturnedTypeName, nil
-}
-
-func (parser *Parser) Ids() ([]string, error) {
-	return parser.Keys, nil
-}
-
-func (parser *Parser) Resources() ([]Resource, error) {
-	return parser.ReturnedResources, nil
-}
-
-func (parser *Parser) Count() (int, error) {
-	return parser.ReturnedCount, nil
-}
-
-func (parser *Parser) UnlimitedCount() (int, error) {
-	return parser.ReturnedUnlimitedCount, nil
-}
-
-func (parser *Parser) Offset() (int, error) {
-	return parser.ReturnedOffset, nil
 }
