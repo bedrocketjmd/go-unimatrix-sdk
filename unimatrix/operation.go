@@ -6,7 +6,7 @@ type Operation struct {
 }
 
 func NewOperation(path string) *Operation {
-	url := GetURL() + path
+	url := URL() + path
 	return &Operation{url: url, parameters: map[string][]string{}}
 }
 
@@ -15,29 +15,29 @@ func NewRealmScopedOperation(realm, resource string) *Operation {
 	return NewOperation(path)
 }
 
-func (operation *Operation) Read() ([]Resource, error) {
+func (operation *Operation) Read() (*Response, error) {
 	return Request(operation.url, "GET", operation.parameters, nil)
 }
 
-func (operation *Operation) Write(body interface{}) ([]Resource, error) {
+func (operation *Operation) Write(body interface{}) (*Response, error) {
 	return Request(operation.url, "POST", operation.parameters, body)
 }
 
-func (operation *Operation) WriteResource(node string, resource Resource) ([]Resource, error) {
+func (operation *Operation) WriteResource(node string, resource Resource) (*Response, error) {
 	var body = make(map[string][]interface{})
 	var resources []interface{}
-	resourceAttributes, _ := resource.GetAttributes()
+	resourceAttributes, _ := resource.Attributes()
 	resources = append(resources, resourceAttributes)
 	body[node] = resources
 
 	return operation.Write(body)
 }
 
-func (operation *Operation) WriteResources(node string, resources []Resource) ([]Resource, error) {
+func (operation *Operation) WriteResources(node string, resources []Resource) (*Response, error) {
 	var body = make(map[string][]interface{})
 	var bodyResources []interface{}
 	for _, resource := range resources {
-		resourceAttributes, _ := resource.GetAttributes()
+		resourceAttributes, _ := resource.Attributes()
 		bodyResources = append(bodyResources, resourceAttributes)
 	}
 	body[node] = bodyResources
@@ -45,16 +45,16 @@ func (operation *Operation) WriteResources(node string, resources []Resource) ([
 	return operation.Write(body)
 }
 
-func (operation *Operation) Destroy() ([]Resource, error) {
+func (operation *Operation) Destroy() (*Response, error) {
 	return Request(operation.url, "DELETE", operation.parameters, nil)
 }
 
-func (operation *Operation) DestroyByUUID(uuid string) ([]Resource, error) {
+func (operation *Operation) DestroyByUUID(uuid string) (*Response, error) {
 	operation.AppendParameters(map[string][]string{"uuid": []string{uuid}})
 	return operation.Destroy()
 }
 
-func (operation *Operation) DestroyByUUIDs(uuids []string) ([]Resource, error) {
+func (operation *Operation) DestroyByUUIDs(uuids []string) (*Response, error) {
 	operation.AppendParameters(map[string][]string{"uuid:in[]": uuids})
 	return operation.Destroy()
 }

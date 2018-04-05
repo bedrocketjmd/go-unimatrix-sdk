@@ -18,7 +18,7 @@ func NewAccessTokenOperation(clientId string, clientSecret string) *AccessTokenO
 func (accessTokenOperation *AccessTokenOperation) Read() (map[string]interface{}, error) {
 	client := &http.Client{}
 
-	authorizationURL := GetAuthorizationURL() + "/token"
+	authorizationURL := AuthorizationURL() + "/token"
 
 	req, error := http.NewRequest("POST", authorizationURL, nil)
 

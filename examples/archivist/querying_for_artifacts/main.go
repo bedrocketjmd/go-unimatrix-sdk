@@ -48,8 +48,9 @@ func main() {
 	fmt.Println(operation)
 
 	response, _ := operation.Read()
+	resources, _ := response.Resources()
 	fmt.Println("\nRESPONSE:")
-	for _, resource := range response {
+	for _, resource := range resources {
 		fmt.Println(resource)
 	}
 }

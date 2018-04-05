@@ -7,10 +7,13 @@ import (
 )
 
 type Parser struct {
-	Name      string
-	TypeName  string
-	Keys      []string
-	Resources []Resource
+	Name           string
+	TypeName       string
+	Keys           []string
+	Resources      []Resource
+	Count          int
+	UnlimitedCount int
+	Offset         int
 }
 
 type JsonResponse map[string]*json.RawMessage
@@ -138,9 +141,12 @@ func NewParser(rawResponse []byte) (*Parser, error) {
 	buildResourceIndex(jsonResponse, associationIndex, staticResponse.Errors)
 
 	return &Parser{
-		Name:      this.Name,
-		TypeName:  this.TypeName,
-		Keys:      ids,
-		Resources: resources(this.Name, ids),
+		Name:           this.Name,
+		TypeName:       this.TypeName,
+		Keys:           ids,
+		Resources:      resources(this.Name, ids),
+		Count:          this.Count,
+		UnlimitedCount: this.UnlimitedCount,
+		Offset:         this.Offset,
 	}, nil
 }

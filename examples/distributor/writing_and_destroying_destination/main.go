@@ -32,8 +32,9 @@ func main() {
 
 	// write destination
 	writeResponse, _ := operation.WriteResource("destinations", *destination)
-	fmt.Println(writeResponse)
-	uuid, _ := writeResponse[0].GetUUID()
+	resources, _ := writeResponse.Resources()
+	fmt.Println(resources)
+	uuid, _ := resources[0].UUID()
 
 	// destroy destination
 	destroyResponse, _ := operation.DestroyByUUID(uuid)

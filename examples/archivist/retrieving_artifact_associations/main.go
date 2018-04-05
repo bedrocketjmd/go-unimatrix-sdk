@@ -19,36 +19,37 @@ func main() {
 		Include("relationships.category", "artifacts")
 
 	operation.AssignParameters(query.Parameters())
-	resources, _ := operation.Read()
+	response, _ := operation.Read()
+	resources, _ := response.Resources()
 	artifact := resources[0]
 
 	// get all associations as ResourceAssociations type - map[string][]Resource
-	associations, _ := artifact.GetAssociations()
+	associations, _ := artifact.Associations()
 	fmt.Println("ALL ASSOCIATIONS:")
 	fmt.Println(associations)
 
 	// get single association
-	relationships, _ := artifact.GetAssociation("artifact_relationships")
+	relationships, _ := artifact.Association("artifact_relationships")
 	fmt.Println("\nSINGLE ASSOCIATION:")
 	fmt.Println(relationships)
 
 	// get artifact relationships of particular name
-	athletes, _ := artifact.GetRelationships("athlete")
+	athletes, _ := artifact.Relationships("athlete")
 	fmt.Println("\nATHLETE RELATIONSHIPS:")
 	fmt.Println(athletes)
-	categories, _ := artifact.GetRelationships("category")
+	categories, _ := artifact.Relationships("category")
 	fmt.Println("\nCATEGORY RELATIONSHIPS:")
 	fmt.Println(categories)
 
 	// get related artifact of an artifact relationship
 	relationship := relationships[0]
-	relatedArtifact, _ := relationship.GetAssociation("artifacts")
+	relatedArtifact, _ := relationship.Association("artifacts")
 	fmt.Println("\nRELATED ARTIFACT:")
 	fmt.Println(relatedArtifact)
 
 	// get related artifacts of an artifact of particular relationship
-	athleteArtifacts, _ := artifact.GetRelatedArtifacts("athlete")
-	categoryArtifacts, _ := artifact.GetRelatedArtifacts("category")
+	athleteArtifacts, _ := artifact.RelatedArtifacts("athlete")
+	categoryArtifacts, _ := artifact.RelatedArtifacts("category")
 	fmt.Println("\nRELATED ATHLETE ARTIFACTS:")
 	fmt.Println(athleteArtifacts)
 	fmt.Println("\nRELATED CATEGORY ARTIFACTS:")
