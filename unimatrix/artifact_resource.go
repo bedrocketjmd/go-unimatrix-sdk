@@ -1,6 +1,8 @@
 package unimatrix
 
 func (resource *Resource) Relationships(name string) ([]Resource, error) {
+	var resourceIndex = *resource.resourceIndex
+	var associationIndex = *resource.associationIndex
 	var association []Resource
 	var associationsById = associationIndex["artifacts"][resource.attributes["id"].(string)]
 
@@ -15,6 +17,8 @@ func (resource *Resource) Relationships(name string) ([]Resource, error) {
 }
 
 func (resource *Resource) RelatedArtifacts(name string) ([]Resource, error) {
+	var resourceIndex = *resource.resourceIndex
+	var associationIndex = *resource.associationIndex
 	var association []Resource
 	var associationsById = associationIndex["artifacts"][resource.attributes["id"].(string)]
 
