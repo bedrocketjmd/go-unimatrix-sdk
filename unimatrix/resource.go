@@ -78,8 +78,13 @@ func (resource *Resource) AttributeAsArray(name string) ([]string, error) {
 	}
 }
 
-func (resource *Resource) AttributeAsMap(name string) (map[string]string, error) {
-	if attribute, ok := resource.attributes[name].(map[string]string); ok {
+func (resource *Resource) AttributeAsMap(name string) (map[string]interface{}, error) {
+	if attribute, ok := resource.attributes[name].(map[string]interface{}); ok {
+		for key, value := range attribute {
+			if attribute[key], ok = value.(string); !ok {
+				return nil, NewUnimatrixError("Unable to retrieve attribute as map with string values")
+			}
+		}
 		return attribute, nil
 	} else {
 		return nil, NewUnimatrixError("Unable to retrieve attribute as map")
