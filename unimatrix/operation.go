@@ -10,7 +10,7 @@ func NewOperation(path string) *Operation {
 	return &Operation{url: url, parameters: map[string][]string{}}
 }
 
-func NewRealmScopedOperation(realm, resource string) *Operation {
+func NewRealmOperation(realm, resource string) *Operation {
 	path := "/realms/" + realm + "/" + resource
 	return NewOperation(path)
 }
