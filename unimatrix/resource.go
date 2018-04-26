@@ -12,13 +12,19 @@ type ResourceError struct {
 }
 
 type Resource struct {
-	id            string
-	name          string
-	attributes    map[string]interface{}
-	rawAttributes *json.RawMessage
+	name             string
+	attributes       map[string]interface{}
+	rawAttributes    *json.RawMessage
+	resourceIndex    *ResourceIndex
+	associationIndex *AssociationIndex
+	resourceErrors   *[]ResourceError
 }
 
-func NewResource(name string, attributesInterface interface{}) *Resource {
+type ResourceId struct {
+	Id string `json:"id"`
+}
+
+func NewResource(name string, attributesInterface interface{}, resourceIndex *ResourceIndex, associationIndex *AssociationIndex, resourceErrors *[]ResourceError) *Resource {
 	var attributes map[string]interface{}
 	var rawAttributes *json.RawMessage
 
@@ -32,9 +38,12 @@ func NewResource(name string, attributesInterface interface{}) *Resource {
 	}
 
 	return &Resource{
-		name:          name,
-		attributes:    attributes,
-		rawAttributes: rawAttributes,
+		name:             name,
+		attributes:       attributes,
+		rawAttributes:    rawAttributes,
+		resourceIndex:    resourceIndex,
+		associationIndex: associationIndex,
+		resourceErrors:   resourceErrors,
 	}
 }
 
@@ -78,8 +87,13 @@ func (resource *Resource) AttributeAsArray(name string) ([]string, error) {
 	}
 }
 
-func (resource *Resource) AttributeAsMap(name string) (map[string]string, error) {
-	if attribute, ok := resource.attributes[name].(map[string]string); ok {
+func (resource *Resource) AttributeAsMap(name string) (map[string]interface{}, error) {
+	if attribute, ok := resource.attributes[name].(map[string]interface{}); ok {
+		for key, value := range attribute {
+			if attribute[key], ok = value.(string); !ok {
+				return nil, NewUnimatrixError("Unable to retrieve attribute as map with string values")
+			}
+		}
 		return attribute, nil
 	} else {
 		return nil, NewUnimatrixError("Unable to retrieve attribute as map")
@@ -92,6 +106,8 @@ func (resource *Resource) SetAttribute(name string, value interface{}) {
 
 func (resource *Resource) Errors() ([]ResourceError, error) {
 	var errors []ResourceError
+	var associationIndex = *resource.associationIndex
+	var resourceErrors = *resource.resourceErrors
 
 	if len(associationIndex[resource.name][resource.attributes["id"].(string)]["errors"]) > 0 {
 		for _, error := range resourceErrors {
@@ -108,6 +124,8 @@ func (resource *Resource) Errors() ([]ResourceError, error) {
 }
 
 func (resource *Resource) Associations() (ResourceAssociations, error) {
+	var resourceIndex = *resource.resourceIndex
+	var associationIndex = *resource.associationIndex
 	var associations = make(ResourceAssociations)
 	var associationsById = associationIndex[resource.name][resource.attributes["id"].(string)]
 
@@ -121,6 +139,8 @@ func (resource *Resource) Associations() (ResourceAssociations, error) {
 }
 
 func (resource *Resource) Association(name string) ([]Resource, error) {
+	var resourceIndex = *resource.resourceIndex
+	var associationIndex = *resource.associationIndex
 	var association []Resource
 	var associationsById = associationIndex[resource.name][resource.attributes["id"].(string)]
 
