@@ -23,7 +23,7 @@ func main() {
 	assetUuid := os.Args[2]
 
 	// Read
-	operation := unimatrix.NewRealmScopedOperation(realmUuid, "artifacts")
+	operation := unimatrix.NewRealmOperation(realmUuid, "artifacts")
 
 	query := unimatrix.NewQuery().
 		Where("type_name", "asset_artifact").

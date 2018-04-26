@@ -29,7 +29,7 @@ func main() {
 	}
 
 	// Query
-	operation := unimatrix.NewRealmScopedOperation(realmUuid, "artifacts")
+	operation := unimatrix.NewRealmOperation(realmUuid, "artifacts")
 	queryType := "Query"
 
 	query := unimatrix.NewQuery().

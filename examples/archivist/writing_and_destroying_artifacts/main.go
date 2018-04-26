@@ -18,7 +18,7 @@ func main() {
 
 	// new operation
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
-	operation := unimatrix.NewRealmScopedOperation(
+	operation := unimatrix.NewRealmOperation(
 		"1e338862026376dd593425404a4f75c0",
 		"artifacts",
 	)

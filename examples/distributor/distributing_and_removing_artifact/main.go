@@ -19,7 +19,7 @@ func main() {
 
 	// new artifact operation
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
-	artifactOperation := unimatrix.NewRealmScopedOperation(
+	artifactOperation := unimatrix.NewRealmOperation(
 		"1e338862026376dd593425404a4f75c0",
 		"artifacts",
 	)
@@ -42,7 +42,7 @@ func main() {
 
 	// new distribution operation
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
-	distributionOperation := unimatrix.NewRealmScopedOperation(
+	distributionOperation := unimatrix.NewRealmOperation(
 		"1e338862026376dd593425404a4f75c0",
 		"distributions",
 	)
