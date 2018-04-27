@@ -78,7 +78,7 @@ func main() {
 	}
 
 	// Search Query
-	operation := unimatrix.NewRealmScopedOperation(realmUuid, "artifacts")
+	operation := unimatrix.NewRealmOperation(realmUuid, "artifacts")
 
 	resourceTypePresent := false
 

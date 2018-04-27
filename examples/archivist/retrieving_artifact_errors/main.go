@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	operation := unimatrix.NewRealmScopedOperation(
+	operation := unimatrix.NewRealmOperation(
 		"1e338862026376dd593425404a4f75c0",
 		"artifacts",
 	)

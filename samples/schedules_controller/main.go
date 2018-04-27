@@ -40,7 +40,7 @@ func main() {
 	}
 
 	// Query
-	operation := unimatrix.NewRealmScopedOperation(realmUuid, "artifacts")
+	operation := unimatrix.NewRealmOperation(realmUuid, "artifacts")
 
 	// - Filtered by Stations
 	query := unimatrix.NewQuery().
