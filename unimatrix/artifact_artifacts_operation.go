@@ -1,6 +1,6 @@
 package unimatrix
 
-func NewArtifactsArtifactsOperation(realm, artifactUUID string) *Operation {
+func NewArtifactArtifactsOperation(realm, artifactUUID string) *Operation {
 	path := "/realms/" + realm + "/artifacts/" + artifactUUID + "/artifacts"
 	return NewOperation(path)
 }
