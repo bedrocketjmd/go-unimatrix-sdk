@@ -66,7 +66,10 @@ func buildResourceIndex(jsonResponse JsonResponse, associationIndex AssociationI
 				var resourceId ResourceId
 				json.Unmarshal(*attributesRaw, &resourceId)
 
-				resourceIndex[responseKey][resourceId.Id] = *NewResource(responseKey, attributesRaw, &resourceIndex, &associationIndex, &errors)
+				resource := *NewResource(responseKey, attributesRaw)
+				resource.AddAssociationIndices(&resourceIndex, &associationIndex, &errors)
+				resourceIndex[responseKey][resourceId.Id] = resource
+
 			}
 		}
 	}

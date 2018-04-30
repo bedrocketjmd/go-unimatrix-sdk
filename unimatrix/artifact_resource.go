@@ -1,6 +1,10 @@
 package unimatrix
 
 func (resource *Resource) Relationships(name string) ([]Resource, error) {
+	if resource.resourceIndex == nil || resource.associationIndex == nil {
+		return nil, NewUnimatrixError("Unable to retrieve relationships")
+	}
+
 	var resourceIndex = *resource.resourceIndex
 	var associationIndex = *resource.associationIndex
 	var association []Resource
@@ -17,6 +21,10 @@ func (resource *Resource) Relationships(name string) ([]Resource, error) {
 }
 
 func (resource *Resource) RelatedArtifacts(name string) ([]Resource, error) {
+	if resource.resourceIndex == nil || resource.associationIndex == nil {
+		return nil, NewUnimatrixError("Unable to retrieve related artifacts")
+	}
+
 	var resourceIndex = *resource.resourceIndex
 	var associationIndex = *resource.associationIndex
 	var association []Resource
