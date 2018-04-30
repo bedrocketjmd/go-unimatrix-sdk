@@ -24,7 +24,7 @@ type ResourceId struct {
 	Id string `json:"id"`
 }
 
-func NewResource(name string, attributesInterface interface{}, resourceIndex *ResourceIndex, associationIndex *AssociationIndex, resourceErrors *[]ResourceError) *Resource {
+func NewResource(name string, attributesInterface interface{}) *Resource {
 	var attributes map[string]interface{}
 	var rawAttributes *json.RawMessage
 
@@ -38,13 +38,16 @@ func NewResource(name string, attributesInterface interface{}, resourceIndex *Re
 	}
 
 	return &Resource{
-		name:             name,
-		attributes:       attributes,
-		rawAttributes:    rawAttributes,
-		resourceIndex:    resourceIndex,
-		associationIndex: associationIndex,
-		resourceErrors:   resourceErrors,
+		name:          name,
+		attributes:    attributes,
+		rawAttributes: rawAttributes,
 	}
+}
+
+func (resource *Resource) AddAssociationIndices(resourceIndex *ResourceIndex, associationIndex *AssociationIndex, resourceErrors *[]ResourceError) {
+	resource.resourceIndex = resourceIndex
+	resource.associationIndex = associationIndex
+	resource.resourceErrors = resourceErrors
 }
 
 func (resource *Resource) UUID() (string, error) {
@@ -105,9 +108,13 @@ func (resource *Resource) SetAttribute(name string, value interface{}) {
 }
 
 func (resource *Resource) Errors() ([]ResourceError, error) {
-	var errors []ResourceError
+	if resource.resourceErrors == nil || resource.associationIndex == nil {
+		return nil, NewUnimatrixError("Unable to retrieve errors")
+	}
+
 	var associationIndex = *resource.associationIndex
 	var resourceErrors = *resource.resourceErrors
+	var errors []ResourceError
 
 	if len(associationIndex[resource.name][resource.attributes["id"].(string)]["errors"]) > 0 {
 		for _, error := range resourceErrors {
@@ -124,6 +131,10 @@ func (resource *Resource) Errors() ([]ResourceError, error) {
 }
 
 func (resource *Resource) Associations() (ResourceAssociations, error) {
+	if resource.resourceIndex == nil || resource.associationIndex == nil {
+		return nil, NewUnimatrixError("Unable to retrieve associations")
+	}
+
 	var resourceIndex = *resource.resourceIndex
 	var associationIndex = *resource.associationIndex
 	var associations = make(ResourceAssociations)
@@ -139,6 +150,10 @@ func (resource *Resource) Associations() (ResourceAssociations, error) {
 }
 
 func (resource *Resource) Association(name string) ([]Resource, error) {
+	if resource.resourceIndex == nil || resource.associationIndex == nil {
+		return nil, NewUnimatrixError("Unable to retrieve association")
+	}
+
 	var resourceIndex = *resource.resourceIndex
 	var associationIndex = *resource.associationIndex
 	var association []Resource
