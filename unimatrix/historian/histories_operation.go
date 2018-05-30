@@ -1,5 +1,7 @@
-package unimatrix
+package historian
 
-func NewHistoriesOperation(realm string) *Operation {
-	return NewRealmOperation(realm, "histories")
+import "../../unimatrix"
+
+func NewHistoriesOperation(realm string) *unimatrix.Operation {
+	return unimatrix.NewRealmOperation(realm, "histories")
 }
