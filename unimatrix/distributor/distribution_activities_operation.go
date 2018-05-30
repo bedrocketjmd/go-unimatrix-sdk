@@ -1,6 +1,8 @@
-package unimatrix
+package distributor
 
-func NewDistibutionActivitiesOperation(realm, distributionUUID string) *Operation {
+import "../../unimatrix"
+
+func NewDistibutionActivitiesOperation(realm, distributionUUID string) *unimatrix.Operation {
 	path := "/realms/" + realm + "/distributions/" + distributionUUID + "/activities"
-	return NewOperation(path)
+	return unimatrix.NewOperation(path)
 }

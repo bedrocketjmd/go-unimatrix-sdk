@@ -1,5 +1,7 @@
-package unimatrix
+package distributor
 
-func NewDistributionsOperation(realm string) *Operation {
-	return NewRealmOperation(realm, "distributions")
+import "../../unimatrix"
+
+func NewDistributionsOperation(realm string) *unimatrix.Operation {
+	return unimatrix.NewRealmOperation(realm, "distributions")
 }
