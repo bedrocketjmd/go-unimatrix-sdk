@@ -1,5 +1,7 @@
-package unimatrix
+package curator
 
-func NewSourcesOperation(realm string) *Operation {
-	return NewRealmOperation(realm, "sources")
+import "../../unimatrix"
+
+func NewSourcesOperation(realm string) *unimatrix.Operation {
+	return unimatrix.NewRealmOperation(realm, "sources")
 }
