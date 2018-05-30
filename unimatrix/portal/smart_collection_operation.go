@@ -1,6 +1,8 @@
-package unimatrix
+package portal
 
-func NewSmartCollectionOperation(realm, smartCollectionID string) *Operation {
+import "../../unimatrix"
+
+func NewSmartCollectionOperation(realm, smartCollectionID string) *unimatrix.Operation {
 	path := "/realms/" + realm + "/smart_collections/" + smartCollectionID
-	return NewOperation(path)
+	return unimatrix.NewOperation(path)
 }
