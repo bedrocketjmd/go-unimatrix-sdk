@@ -1,6 +1,8 @@
-package unimatrix
+package quartermaster
 
-func NewBinaryIngressorsOperation(realm, binaryUUID string) *Operation {
+import "../../unimatrix"
+
+func NewBinaryIngressorsOperation(realm, binaryUUID string) *unimatrix.Operation {
 	path := "/realms/" + realm + "/binaries/" + binaryUUID + "/ingressors"
-	return NewOperation(path)
+	return unimatrix.NewOperation(path)
 }

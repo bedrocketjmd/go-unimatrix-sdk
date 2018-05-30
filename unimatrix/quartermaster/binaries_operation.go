@@ -1,5 +1,7 @@
-package unimatrix
+package quartermaster
 
-func NewBinariesOperation(realm string) *Operation {
-	return NewRealmOperation(realm, "binaries")
+import "../../unimatrix"
+
+func NewBinariesOperation(realm string) *unimatrix.Operation {
+	return unimatrix.NewRealmOperation(realm, "binaries")
 }
