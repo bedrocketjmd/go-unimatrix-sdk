@@ -1,5 +1,7 @@
-package unimatrix
+package regent
 
-func NewRealmsOperation(realm string) *Operation {
-	return NewRealmOperation(realm, "realms")
+import "../../unimatrix"
+
+func NewRealmsOperation(realm string) *unimatrix.Operation {
+	return unimatrix.NewRealmOperation(realm, "realms")
 }
