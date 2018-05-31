@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"../../unimatrix"
+	"../../unimatrix/archivist"
 )
 
 // Test Command
@@ -78,7 +79,7 @@ func main() {
 	}
 
 	// Search Query
-	operation := unimatrix.NewRealmOperation(realmUuid, "artifacts")
+	operation := archivist.NewArtifactsOperation(realmUuid)
 
 	resourceTypePresent := false
 

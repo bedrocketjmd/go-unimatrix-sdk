@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"../../unimatrix"
+	"../../unimatrix/archivist"
 )
 
 // Test Commands
@@ -29,7 +30,7 @@ func main() {
 	}
 
 	// Query
-	operation := unimatrix.NewRealmOperation(realmUuid, "artifacts")
+	operation := archivist.NewArtifactsOperation(realmUuid)
 	queryType := "Query"
 
 	query := unimatrix.NewQuery().

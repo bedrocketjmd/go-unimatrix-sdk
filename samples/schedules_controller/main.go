@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"../../unimatrix"
+	"../../unimatrix/archivist"
 )
 
 // Test Command
@@ -40,7 +41,7 @@ func main() {
 	}
 
 	// Query
-	operation := unimatrix.NewRealmOperation(realmUuid, "artifacts")
+	operation := archivist.NewArtifactsOperation(realmUuid)
 
 	// - Filtered by Stations
 	query := unimatrix.NewQuery().
@@ -67,7 +68,8 @@ func main() {
 	var stationScheduleEvents = make(map[string][]unimatrix.Resource)
 
 	for _, resource := range resources {
-		categories, _ := resource.RelatedArtifacts("category")
+		artifact := archivist.Artifact{&resource}
+		categories, _ := artifact.RelatedArtifacts("category")
 		category := categories[0]
 		typeName, _ := category.AttributeAsString("type_name")
 
