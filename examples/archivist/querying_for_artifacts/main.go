@@ -4,14 +4,12 @@ import (
 	"fmt"
 
 	"../../../unimatrix"
+	"../../../unimatrix/archivist"
 )
 
 func main() {
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
-	operation := unimatrix.NewRealmOperation(
-		"5cbc6bb3db90e2f1236e005f9054776c",
-		"artifacts",
-	)
+	operation := archivist.NewArtifactsOperation("5cbc6bb3db90e2f1236e005f9054776c")
 
 	// assign query parameters directly with a map[string][]string
 	parameters := map[string][]string{"test": []string{"test_value"}}

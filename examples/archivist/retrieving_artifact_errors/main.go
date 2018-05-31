@@ -4,13 +4,11 @@ import (
 	"fmt"
 
 	"../../../unimatrix"
+	"../../../unimatrix/archivist"
 )
 
 func main() {
-	operation := unimatrix.NewRealmOperation(
-		"1e338862026376dd593425404a4f75c0",
-		"artifacts",
-	)
+	operation := archivist.NewArtifactsOperation("1e338862026376dd593425404a4f75c0")
 
 	query := unimatrix.NewQuery().
 		Where("uuid", "does-not-exist")

@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"../../../unimatrix"
+	"../../../unimatrix/archivist"
 )
 
 func main() {
@@ -12,10 +13,7 @@ func main() {
 
 	// new operation
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
-	operation := unimatrix.NewRealmOperation(
-		"1e338862026376dd593425404a4f75c0",
-		"artifacts",
-	)
+	operation := archivist.NewArtifactsOperation("1e338862026376dd593425404a4f75c0")
 	operation.SetAccessToken(accessToken)
 
 	// create artifact

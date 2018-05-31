@@ -4,14 +4,12 @@ import (
 	"fmt"
 
 	"../../../unimatrix"
+	"../../../unimatrix/archivist"
 )
 
 func main() {
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
-	operation := unimatrix.NewRealmOperation(
-		"5cbc6bb3db90e2f1236e005f9054776c",
-		"artifacts",
-	)
+	operation := archivist.NewArtifactsOperation("5cbc6bb3db90e2f1236e005f9054776c")
 
 	query := unimatrix.NewQuery().
 		Where("uuid", "0b801213aed8e27a14df83b8dc02e16e").
@@ -21,7 +19,7 @@ func main() {
 	operation.AssignParameters(query.Parameters())
 	response, _ := operation.Read()
 	resources, _ := response.Resources()
-	artifact := resources[0]
+	artifact := archivist.Artifact{&resources[0]}
 
 	// get all associations as ResourceAssociations type - map[string][]Resource
 	associations, _ := artifact.Associations()
