@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"../../../unimatrix"
+	"../../../unimatrix/distributor"
 )
 
 func main() {
@@ -18,10 +19,7 @@ func main() {
 
 	// new operation
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
-	operation := unimatrix.NewRealmOperation(
-		"1e338862026376dd593425404a4f75c0",
-		"distributions",
-	)
+	operation := distributor.NewDistributionsOperation("1e338862026376dd593425404a4f75c0")
 	operation.SetAccessToken(accessToken)
 
 	query := unimatrix.NewQuery().

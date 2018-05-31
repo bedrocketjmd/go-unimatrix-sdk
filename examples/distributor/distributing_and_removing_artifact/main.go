@@ -6,6 +6,8 @@ import (
 	"time"
 
 	"../../../unimatrix"
+	"../../../unimatrix/archivist"
+	"../../../unimatrix/distributor"
 )
 
 func main() {
@@ -19,10 +21,7 @@ func main() {
 
 	// new artifact operation
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
-	artifactOperation := unimatrix.NewRealmOperation(
-		"1e338862026376dd593425404a4f75c0",
-		"artifacts",
-	)
+	artifactOperation := archivist.NewArtifactsOperation("1e338862026376dd593425404a4f75c0")
 	artifactOperation.SetAccessToken(accessToken)
 
 	// create artifact for distribution
@@ -42,10 +41,7 @@ func main() {
 
 	// new distribution operation
 	unimatrix.SetURL("http://us-west-2.api.acceptance.unimatrix.io")
-	distributionOperation := unimatrix.NewRealmOperation(
-		"1e338862026376dd593425404a4f75c0",
-		"distributions",
-	)
+	distributionOperation := distributor.NewDistributionsOperation("1e338862026376dd593425404a4f75c0")
 	distributionOperation.SetAccessToken(accessToken)
 
 	// create distribution
